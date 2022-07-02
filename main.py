@@ -2,6 +2,8 @@ import concurrent.futures
 import logging
 from datetime import datetime
 from pathlib import Path
+import time
+import json
 
 from decouple import config
 
@@ -42,8 +44,11 @@ def run():
     images_folder = "./_images/"
     Path(images_folder).mkdir(parents=True, exist_ok=True)
 
+    
+    t1 = time.perf_counter() # başlangıç zamanı
+    start_index = 0
     # Run object detection model frame by frame.
-    for frame in frames_json:
+    for index, frame in enumerate(frames_json[start_index:], start=start_index):
         # Create a prediction object to store frame info and detections
         predictions = FramePredictions(frame['url'], frame['image_url'], frame['video_name'])
         #print(predictions.image_url)
@@ -51,6 +56,14 @@ def run():
         predictions = detection_model.process(predictions,evaluation_server_url)
         # Send model predictions of this frame to the evaluation server
         result = server.send_prediction(predictions)
+        response_json = json.loads(result.text)
+        if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
+            t2 = time.perf_counter()
+            waitTime = 60 - (t1-t2)
+            time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
+            print(f"bekleniliyor... {waitTime} saniye")
+            result = server.send_prediction(predictions) # tekrar gönder
+            t1 = time.perf_counter() # t1 zamanını yenile
 
 
 if __name__ == '__main__':

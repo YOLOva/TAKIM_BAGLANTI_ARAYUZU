@@ -1,4 +1,4 @@
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     from sahi.model import Yolov5DetectionModel
     from sahi.utils.cv import read_image
     from sahi.predict import get_prediction, get_sliced_prediction, predict
@@ -18,4 +18,21 @@ if __name__ == "__main__":
     
     result = get_prediction(for_detect, detection_model)
     result.export_visuals(export_dir="demo_data/")
-    Image("demo_data/prediction_visual.png")
+    Image("demo_data/prediction_visual.png")"""
+
+
+
+# Eğer 80. frame gelmişse geçen zamana bakılsın
+
+import time
+minute = 60
+one_second=1
+t1 = time.perf_counter()
+for i in range(1, 170):
+    time.sleep(one_second)
+    t2 = time.perf_counter()
+    if((t2 - t1) > 10*one_second):
+        print(f"bekleme yapıldı {i}")
+        print(f"geçen zaman {t2 - t1}")
+        t1 = time.perf_counter()
+print(f"geçen zaman {t2 - t1}")
