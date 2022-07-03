@@ -53,7 +53,7 @@ def run():
         predictions = FramePredictions(frame['url'], frame['image_url'], frame['video_name'])
         #print(predictions.image_url)
         # Run detection model
-        predictions = detection_model.process(predictions,evaluation_server_url)
+        predictions = detection_model.process(index, predictions,evaluation_server_url)
         # Send model predictions of this frame to the evaluation server
         result = server.send_prediction(predictions)
         response_json = json.loads(result.text)
