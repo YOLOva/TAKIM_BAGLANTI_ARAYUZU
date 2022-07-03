@@ -77,7 +77,6 @@ class ObjectDetectionModel:
         cocos = result.to_coco_annotations()
         detection_inis_group = []
         detection_diger_group = []
-        detection_group= []
         for coco in cocos:
             bbox=coco["bbox"]
 
