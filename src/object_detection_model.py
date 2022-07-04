@@ -28,7 +28,7 @@ class ObjectDetectionModel:
             model_path="D:\Teknofest\YOLOVA\ConnectionInterface\TAKIM_BAGLANTI_ARAYUZU\src\yolova\models\Best3_Ekleme9.pt",
             image_size=640,
             confidence_threshold=0.5,
-            device="cuda:0" # "cpu",
+            device="cpu"#"cuda:0" # "cpu",
         )
         # Modelinizi bu kısımda init edebilirsiniz.
         # self.model = get_keras_model() # Örnektir!

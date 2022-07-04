@@ -1,4 +1,7 @@
-"""if __name__ == "__main__":
+import time
+
+
+if __name__ == "__main__":
     from sahi.model import Yolov5DetectionModel
     from sahi.utils.cv import read_image
     from sahi.predict import get_prediction, get_sliced_prediction, predict
@@ -8,20 +11,25 @@
     )
     import torchvision
 
-    for_detect = ".\test\2_35_frame_000788.jpg"
+    for_detect = "./src\yolova\test\3_284_dehazed_006840.png"
     detection_model = Yolov5DetectionModel(
-        model_path="D:\Teknofest\YOLOVA\ConnectionInterface\TAKIM_BAGLANTI_ARAYUZU\src\yolova\models\Best3_Ekleme9.pt",
+        model_path=".\src\yolova\models\Best3_Ekleme9.pt",
         image_size=640,
         confidence_threshold=0.5,
-        device="cuda:0" # "cpu",
+        device="cuda:0" #"cpu" 
     )
     
+    t1 = time.perf_counter() 
     result = get_prediction(for_detect, detection_model)
+    cocos = result.to_coco_annotations()
+    print(cocos)
+    t2 = time.perf_counter() 
+    print(f"geçen süre, {t2-t1}")
     result.export_visuals(export_dir="demo_data/")
-    Image("demo_data/prediction_visual.png")"""
+    Image("demo_data/prediction_visual.png")
 
 
-
+""" 
 # Eğer 80. frame gelmişse geçen zamana bakılsın
 
 import time
@@ -35,4 +43,4 @@ for i in range(1, 170):
         print(f"bekleme yapıldı {i}")
         print(f"geçen zaman {t2 - t1}")
         t1 = time.perf_counter()
-print(f"geçen zaman {t2 - t1}")
+print(f"geçen zaman {t2 - t1}") """

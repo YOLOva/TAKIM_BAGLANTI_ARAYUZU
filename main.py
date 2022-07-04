@@ -61,7 +61,7 @@ def run():
             t2 = time.perf_counter()
             waitTime = 61 - (t1-t2)
             time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
-            print(f"bekleniliyor... {waitTime} saniye")
+            print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
             result = server.send_prediction(predictions) # tekrar gönder
             t1 = time.perf_counter() # t1 zamanını yenile
 

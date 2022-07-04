@@ -1,9 +1,18 @@
 python-decouple
 requests~=2.25.1
-pillow~=8.2.0
+pillow~=9.2.0
 
 #YOLOva Detector
-torch~=1.11.0
-torchvision~=0.12.0
+torch~=1.12.0
+torchvision~=0.13.0
+#cudatoolkit
 yolov5
 sahi
+scikit-image 
+imagecodecs                                                                                                                                                                                                                                  
+
+#cuda
+opencv-python
+numpy
+matplotlib
+tqdm
