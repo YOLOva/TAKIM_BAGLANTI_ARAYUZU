@@ -57,7 +57,8 @@ def run():
         # Send model predictions of this frame to the evaluation server
         result = server.send_prediction(predictions)
         response_json = json.loads(result.text)
-        if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
+        if result.status_code == 201:pass
+        elif "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
             t2 = time.perf_counter()
             waitTime = 61 - (t1-t2)
             time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle

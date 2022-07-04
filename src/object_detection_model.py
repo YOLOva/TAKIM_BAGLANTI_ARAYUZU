@@ -12,7 +12,6 @@ from src.yolova.constants import index_to_classes
 from sahi.model import Yolov5DetectionModel
 from sahi.utils.cv import read_image
 from sahi.predict import get_prediction, get_sliced_prediction, predict
-from IPython.display import Image
 from sahi.utils.yolov5 import (
     download_yolov5s6_model,
 )
@@ -25,7 +24,7 @@ class ObjectDetectionModel:
         logging.info('Created Object Detection Model')
         self.evaulation_server = evaluation_server_url
         self.model = Yolov5DetectionModel(
-            model_path="D:\Teknofest\YOLOVA\ConnectionInterface\TAKIM_BAGLANTI_ARAYUZU\src\yolova\models\Best3_Ekleme9.pt",
+            model_path=".\src\yolova\models\Best3_Ekleme9.pt",
             image_size=640,
             confidence_threshold=0.5,
             device="cpu"#"cuda:0" # "cpu",
@@ -101,13 +100,13 @@ class ObjectDetectionModel:
             else:
                 detection_diger_group.append(d_obj)
             # Modelin tahmin ettiği her nesne prediction nesnesi içerisinde bulunan detected_objects listesine eklenmelidir.
-        d_objs = self.inisAlaniKontrolu(detection_inis_group, detection_diger_group)
+        d_objs = self.inisAlaniKontrolu(detection_inis_group,detection_diger_group)
         for d_obj in d_objs:
             prediction.add_detected_object(d_obj)
 
         return prediction
 
-    def inisAlaniKontrolu(detection_inis_group, detection_diger_group):
+    def inisAlaniKontrolu(self,detection_inis_group, detection_diger_group):
         for detection_inis in detection_inis_group:
             for detection_diger in detection_diger_group:
                 #sol üst köşe alanda mı
