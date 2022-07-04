@@ -60,7 +60,7 @@ def run():
         if result.status_code == 201:pass
         elif "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
             t2 = time.perf_counter()
-            waitTime = 61 - (t1-t2)
+            waitTime = 61 - (t1-t2)%60
             time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
             print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
             result = server.send_prediction(predictions) # tekrar gönder
