@@ -1,5 +1,7 @@
+import imp
 import logging
 import time
+import numpy
 
 import requests
 
@@ -16,18 +18,19 @@ from sahi.utils.yolov5 import (
     download_yolov5s6_model,
 )
 import torchvision
+import cv2
 
 class ObjectDetectionModel:
     # Base class for team models
-
+    use_sahi= True
     def __init__(self, evaluation_server_url):
         logging.info('Created Object Detection Model')
         self.evaulation_server = evaluation_server_url
         self.model = Yolov5DetectionModel(
-            model_path=".\src\yolova\models\Best3_Ekleme9.pt",
+            model_path="./src/yolova/models/best3.pt",
             image_size=640,
             confidence_threshold=0.5,
-            device="cpu"#"cuda:0" # "cpu",
+            device="cuda:0" # "cpu",
         )
         # Modelinizi bu kısımda init edebilirsiniz.
         # self.model = get_keras_model() # Örnektir!
@@ -65,14 +68,19 @@ class ObjectDetectionModel:
         # Yarışma esnasında modelin tahmin olarak ürettiği sonuçlar kullanılmalıdır.
         # Örneğin :
         # for i in results: # gibi
-        result = get_sliced_prediction(
-            image_path,
-            self.model,
-            slice_height = 1024,
-            slice_width = 1024,
-            overlap_height_ratio = 0.1,
-            overlap_width_ratio = 0.1
-        )
+        #indirme hızı 0.8s
+        if self.use_sahi: #1.9 - 2.1 saniye hız
+            result = get_sliced_prediction(
+                image_path,
+                self.model,
+                slice_height = 1024,
+                slice_width = 1024,
+                overlap_height_ratio = 0.1,
+                overlap_width_ratio = 0.1
+            )
+        else: #1.5 - 1.6 saniye hız
+            result = get_prediction(image_path, self.model)
+
         cocos = result.to_coco_annotations()
         detection_inis_group = []
         detection_diger_group = []
@@ -103,7 +111,10 @@ class ObjectDetectionModel:
         d_objs = self.inisAlaniKontrolu(detection_inis_group,detection_diger_group)
         for d_obj in d_objs:
             prediction.add_detected_object(d_obj)
+        result.export_visuals(export_dir="last_detect/")
 
+        cv2.imshow("process...", cv2.imread("last_detect\prediction_visual.png"))
+        cv2.waitKey(10)
         return prediction
 
     def inisAlaniKontrolu(self,detection_inis_group, detection_diger_group):

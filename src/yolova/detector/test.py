@@ -5,15 +5,14 @@ if __name__ == "__main__":
     from sahi.model import Yolov5DetectionModel
     from sahi.utils.cv import read_image
     from sahi.predict import get_prediction, get_sliced_prediction, predict
-    from IPython.display import Image
     from sahi.utils.yolov5 import (
         download_yolov5s6_model,
     )
     import torchvision
 
-    for_detect = "./src\yolova\test\3_284_dehazed_006840.png"
+    for_detect = "./src/yolova/test/3_284_dehazed_006840.png"
     detection_model = Yolov5DetectionModel(
-        model_path=".\src\yolova\models\Best3_Ekleme9.pt",
+        model_path="./src/yolova/models/best3.pt",
         image_size=640,
         confidence_threshold=0.5,
         device="cuda:0" #"cpu" 
@@ -26,8 +25,6 @@ if __name__ == "__main__":
     t2 = time.perf_counter() 
     print(f"geçen süre, {t2-t1}")
     result.export_visuals(export_dir="demo_data/")
-    Image("demo_data/prediction_visual.png")
-
 
 """ 
 # Eğer 80. frame gelmişse geçen zamana bakılsın

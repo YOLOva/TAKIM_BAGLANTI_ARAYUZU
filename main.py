@@ -11,6 +11,7 @@ from src.connection_handler import ConnectionHandler
 from src.frame_predictions import FramePredictions
 from src.object_detection_model import ObjectDetectionModel
 
+import cv2
 
 def configure_logger(team_name):
     log_folder = "./_logs/"
@@ -49,11 +50,13 @@ def run():
     start_index = 0
     # Run object detection model frame by frame.
     for index, frame in enumerate(frames_json[start_index:], start=start_index):
+        t1_for_one = time.perf_counter()
         # Create a prediction object to store frame info and detections
         predictions = FramePredictions(frame['url'], frame['image_url'], frame['video_name'])
         #print(predictions.image_url)
         # Run detection model
         predictions = detection_model.process(index, predictions,evaluation_server_url)
+        
         # Send model predictions of this frame to the evaluation server
         result = server.send_prediction(predictions)
         response_json = json.loads(result.text)
@@ -65,6 +68,7 @@ def run():
             print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
             result = server.send_prediction(predictions) # tekrar gönder
             t1 = time.perf_counter() # t1 zamanını yenile
-
+        t2_for_one = time.perf_counter()
+        print(f"GEÇEN SÜRE: {t2_for_one -t1_for_one }")
 if __name__ == '__main__':
     run()
