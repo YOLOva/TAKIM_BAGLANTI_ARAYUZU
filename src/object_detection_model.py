@@ -61,14 +61,6 @@ class ObjectDetectionModel:
         return frame_results
 
     def detect(self, prediction, image_path):
-        # Modelinizle bu fonksiyon içerisinde tahmin yapınız.
-        # results = self.model.evaluate(...) # Örnektir.
-
-        # Burada örnek olması amacıyla 20 adet tahmin yapıldığı simüle edilmiştir.
-        # Yarışma esnasında modelin tahmin olarak ürettiği sonuçlar kullanılmalıdır.
-        # Örneğin :
-        # for i in results: # gibi
-        #indirme hızı 0.8s
         if self.use_sahi: #1.9 - 2.1 saniye hız
             result = get_sliced_prediction(
                 image_path,

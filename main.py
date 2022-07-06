@@ -13,10 +13,14 @@ from src.object_detection_model import ObjectDetectionModel
 
 import cv2
 
+from src.yolova.status_saver import PredictStatusSaver
+
 def configure_logger(team_name):
     log_folder = "./_logs/"
     Path(log_folder).mkdir(parents=True, exist_ok=True)
     log_filename = datetime.now().strftime(log_folder + team_name + '_%Y_%m_%d__%H_%M_%S_%f.log')
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
     logging.basicConfig(filename=log_filename, level=logging.INFO,
                         format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -44,31 +48,42 @@ def run():
     # Create images folder
     images_folder = "./_images/"
     Path(images_folder).mkdir(parents=True, exist_ok=True)
-
-    
+    status_saver = PredictStatusSaver()
     t1 = time.perf_counter() # başlangıç zamanı
     start_index = 0
     # Run object detection model frame by frame.
+    sended_indexes = status_saver.get_sended_indexes()
     for index, frame in enumerate(frames_json[start_index:], start=start_index):
-        t1_for_one = time.perf_counter()
-        # Create a prediction object to store frame info and detections
-        predictions = FramePredictions(frame['url'], frame['image_url'], frame['video_name'])
-        #print(predictions.image_url)
-        # Run detection model
-        predictions = detection_model.process(index, predictions,evaluation_server_url)
-        
-        # Send model predictions of this frame to the evaluation server
-        result = server.send_prediction(predictions)
-        response_json = json.loads(result.text)
-        if result.status_code == 201:pass
-        elif "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
-            t2 = time.perf_counter()
-            waitTime = 61 - (t1-t2)%60
-            time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
-            print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
-            result = server.send_prediction(predictions) # tekrar gönder
-            t1 = time.perf_counter() # t1 zamanını yenile
-        t2_for_one = time.perf_counter()
-        print(f"GEÇEN SÜRE: {t2_for_one -t1_for_one }")
+        print(f"current index {index}")
+        if(index not in sended_indexes):
+            t1_for_one = time.perf_counter()
+            # Create a prediction object to store frame info and detections
+            predictions = FramePredictions(frame['url'], frame['image_url'], frame['video_name'])
+            #print(predictions.image_url)
+            # Run detection model
+            predictions = detection_model.process(index, predictions,evaluation_server_url)
+            # Send model predictions of this frame to the evaluation server
+            loop = True
+            while loop:
+                try:
+                    result = server.send_prediction(predictions)
+                    loop=False
+                except:
+                    pass
+            response_json = json.loads(result.text)
+            if result.status_code == 201:
+                status_saver.addLastFrameIndex(index)
+            else:
+                if "You have already send prediction for this frame." in response_json["detail"]:
+                    status_saver.addLastFrameIndex(index)
+                if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
+                    t2 = time.perf_counter()
+                    waitTime = 61 - (t1-t2)%60
+                    time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
+                    print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
+                    result = server.send_prediction(predictions) # tekrar gönder
+                    t1 = time.perf_counter() # t1 zamanını yenile
+            t2_for_one = time.perf_counter()
+            print(f"GEÇEN SÜRE: {t2_for_one - t1_for_one }")
 if __name__ == '__main__':
     run()
