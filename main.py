@@ -55,6 +55,7 @@ def run():
     sended_indexes = status_saver.get_sended_indexes()
     for index, frame in enumerate(frames_json[start_index:], start=start_index):
         print(f"current index {index}")
+        print(f"complete ratio {len(sended_indexes)+1}/{len(frames_json)+1}")
         if(index not in sended_indexes):
             t1_for_one = time.perf_counter()
             # Create a prediction object to store frame info and detections
@@ -79,8 +80,8 @@ def run():
                 if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
                     t2 = time.perf_counter()
                     waitTime = 61 - (t1-t2)%60
-                    time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
                     print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
+                    time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
                     result = server.send_prediction(predictions) # tekrar gönder
                     t1 = time.perf_counter() # t1 zamanını yenile
             t2_for_one = time.perf_counter()
