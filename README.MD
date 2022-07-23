@@ -16,7 +16,7 @@ Versiyon seçildikten sonra örneğin 11.6 versiyonu için,
 nvidia toolkit linkinde 11.6 versiyonunda bulunan 11.6.2 seçilebilir kurulabilir. Nvidia toolkit indirilirken kayıt olmanız gerekecektir kaydolun indirme linki ardından verilecektir. Nvidia toolkit kurulurken herhangi herhangi bir özel kuruluma ihtiyaç yoktur.
 pythorch linki: https://pytorch.org/get-started/locally/
 nvidia toolkit linki: https://developer.nvidia.com/cuda-toolkit-archive
-
+## Anaconda Ortamının kurulması aktifleştirilmesi
 Aşağıdaki kodu conda prompt üzerinde çalıştırmanız gerekmektedir. 
 - Sistem için bir sanal ortam oluşturulur ve sanal ortamı aktifleştirmektedir. (Anaconda'nın kurulu olduğu varsayılmaktadır.) 
 ```shell
