@@ -34,14 +34,6 @@ pythorch linkinde aşağıdaki resimde mavi ile işaretlenmiş alanda bir pip ko
 ![image](https://user-images.githubusercontent.com/55704722/180611172-315fbd5d-4f2f-4619-9588-cbe82922984a.png)
 
 Pythorch kurulumunu başlatmak için bu kodu Conda Prompt üzerinde çalıştırmanız gerekmektedir. 
-
-
-
-- Sistem için bir sanal ortam oluşturulur. (Anaconda'nın kurulu olduğu varsayılmaktadır.)
-```shell
-$ conda create -n teknofest_yarisma python=3.7
-$ conda activate teknofest_yarisma
-```
 - Gerekli paketler yüklenir.
 ```shell
 $ pip install -r requirements.txt
