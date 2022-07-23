@@ -31,16 +31,17 @@ Sistemde eğer daha önce pythorch kuruluysa kaldırmak için aşağıdaki kodu 
 $ pip uninstall torch torchvision torchaudio
 ```
 pythorch linki: https://pytorch.org/get-started/locally/
-pythorch linkinde aşağıdaki resimde mavi ile işaretlenmiş alanda bir pip komutu bulunacaktır.
+- pythorch linkinde aşağıdaki resimde mavi ile işaretlenmiş alanda bir pip komutu bulunacaktır. Pythorch kurulumunu başlatmak için bu kodu Conda Prompt üzerinde çalıştırmanız gerekmektedir. 
 
 ![image](https://user-images.githubusercontent.com/55704722/180611172-315fbd5d-4f2f-4619-9588-cbe82922984a.png)
 
-
-Pythorch kurulumunu başlatmak için bu kodu Conda Prompt üzerinde çalıştırmanız gerekmektedir. 
+## Gerekli paketlerin yüklenmesi
 - Gerekli paketler yüklenir.
 ```shell
 $ pip install -r requirements.txt
 ```
+ 
+## Sistemi çalıştırmak
 - Sistemi çalıştırmak için aşağıdaki komut çalıştırılır.
 ````shell
 python main.py
