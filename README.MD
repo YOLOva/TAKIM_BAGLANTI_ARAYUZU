@@ -11,6 +11,7 @@ Yarışmacılar örnek arayüzü ihtiyaçlarına göre güncelleyebilir yada far
 - Nvidia Ekran Kartı bulunan bir sistem de
 Nvidia Cuda kurulmalı hangi versiyon Cuda kurulacağının kontrolü aşağıdaki linkte bulunan pythorch kurulumunda sunulan compute platformu olarak belirlenmiş cuda versiyonlarından hangisi daha sonra kurulacaksa o versiyon seçilebilir. Tercihen en ileri versiyon olabilir.
 ![image](https://user-images.githubusercontent.com/55704722/180610737-5aa45a1e-0c10-4986-9a9d-d19db973a7a3.png)
+
 Versiyon seçildikten sonra örneğin 11.6 versiyonu için,
 nvidia toolkit linkinde 11.6 versiyonunda bulunan 11.6.2 seçilebilir kurulabilir. Nvidia toolkit indirilirken kayıt olmanız gerekecektir kaydolun indirme linki ardından verilecektir. Nvidia toolkit kurulurken herhangi herhangi bir özel kuruluma ihtiyaç yoktur.
 pythorch linki: https://pytorch.org/get-started/locally/
