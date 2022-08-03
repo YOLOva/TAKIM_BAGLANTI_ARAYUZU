@@ -1,6 +1,7 @@
 import concurrent.futures
 import logging
 from datetime import datetime
+import math
 from pathlib import Path
 import time
 import json
@@ -76,7 +77,7 @@ def run():
                     status_saver.addLastFrameIndex(index)
                 if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
                     t2 = time.perf_counter()
-                    waitTime = 61 - (t1-t2)%60
+                    waitTime = 61 - abs(t2-t1)%60
                     print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
                     time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
                     result = server.send_prediction(predictions) # tekrar gönder
