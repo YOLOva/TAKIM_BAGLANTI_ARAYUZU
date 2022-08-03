@@ -57,8 +57,12 @@ class ObjectDetectionModel:
         # Örnek: Burada OpenCV gibi bir tool ile preprocessing işlemi yapılabilir. (Tercihe Bağlı)
         # ...
         # Nesne tespiti modelinin bulunduğu fonksiyonun (self.detect() ) çağırılması burada olmalıdır.
+        
+        t1 = time.perf_counter() # başlangıç zamanı
         frame_results = self.detect(prediction, image_path)
         # Tahminler objesi FramePrediction sınıfında return olarak dönülmelidir.
+        t2 = time.perf_counter() # başlangıç zamanı
+        print("Tespit Süresi", t2-t1)
         return frame_results
 
     def detect(self, prediction, image_path):

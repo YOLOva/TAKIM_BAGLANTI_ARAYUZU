@@ -74,7 +74,7 @@ def run():
             else:
                 if "You have already send prediction for this frame." in response_json["detail"]:
                     status_saver.addLastFrameIndex(index)
-                if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
+                else:#if "You do not have permission to perform this action." in response_json["detail"]: # dakikada 80 limiti aşılmışsa
                     t2 = time.perf_counter()
                     waitTime = 61 - (t1-t2)%60
                     print(f"dakikada 80 frame aşıldı, bekleniliyor... {waitTime} saniye")
