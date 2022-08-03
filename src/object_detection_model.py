@@ -20,6 +20,7 @@ from sahi.utils.yolov5 import (
 import torchvision
 import cv2
 
+from pathlib import Path
 class ObjectDetectionModel:
     # Base class for team models
     use_sahi= True
@@ -27,7 +28,7 @@ class ObjectDetectionModel:
         logging.info('Created Object Detection Model')
         self.evaulation_server = evaluation_server_url
         self.model = Yolov5DetectionModel(
-            model_path="./src/yolova/models/best3.pt",
+            model_path="./src/yolova/models/best.pt",
             image_size=640,
             confidence_threshold=0.5,
             device="cuda:0" # "cpu",
@@ -103,9 +104,10 @@ class ObjectDetectionModel:
         d_objs = self.inisAlaniKontrolu(detection_inis_group,detection_diger_group)
         for d_obj in d_objs:
             prediction.add_detected_object(d_obj)
-        result.export_visuals(export_dir="last_detect/")
+        image_name = Path(image_path).stem
+        result.export_visuals(export_dir="last_detect/", file_name=image_name)
 
-        cv2.imshow("process...", cv2.imread("last_detect\prediction_visual.png"))
+        cv2.imshow("process...", cv2.imread(f"last_detect\{image_name}.png"))
         cv2.waitKey(10)
         return prediction
 

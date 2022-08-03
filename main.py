@@ -10,9 +10,6 @@ from decouple import config
 from src.connection_handler import ConnectionHandler
 from src.frame_predictions import FramePredictions
 from src.object_detection_model import ObjectDetectionModel
-
-import cv2
-
 from src.yolova.status_saver import PredictStatusSaver
 
 def configure_logger(team_name):
@@ -55,7 +52,7 @@ def run():
     sended_indexes = status_saver.get_sended_indexes()
     for index, frame in enumerate(frames_json[start_index:], start=start_index):
         print(f"current index {index}")
-        print(f"complete ratio {len(sended_indexes)+1}/{len(frames_json)+1}")
+        print(f"complete ratio {len(sended_indexes)}/{len(frames_json)}")
         if(index not in sended_indexes):
             t1_for_one = time.perf_counter()
             # Create a prediction object to store frame info and detections
