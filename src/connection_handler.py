@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 import requests
 
 
@@ -68,6 +69,8 @@ class ConnectionHandler:
         Ayrıca yarışmacılar sunucudan bu gibi başarısız bir gönderimi işaret eden cevap alındığında
         gönderilemeyen tahmini sunucuya tekrar göndermek üzere bir mekanizma tasarlayabilir.
         """
+        
+        t1 = time.perf_counter() # başlangıç zamanı
         payload = json.dumps(prediction.create_payload(self.base_url))
         files = []
         headers = {
@@ -82,4 +85,6 @@ class ConnectionHandler:
             response_json = json.loads(response.text)
             if "You do not have permission to perform this action." in response_json["detail"]:
                 logging.info("Limit exceeded. 80frames/min \n\t{}".format(response.text))
+        t2 = time.perf_counter() # başlangıç zamanı
+        print("Gönderimde geçen zaman:", t2-t1)
         return response
