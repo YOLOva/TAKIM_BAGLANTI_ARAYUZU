@@ -5,7 +5,7 @@ import requests
 
 
 class ConnectionHandler:
-    def __init__(self, base_url="http://teknofest.cezerirobot.com:2052/", username=None, password=None):
+    def __init__(self, base_url="http://10.10.10.10/", username=None, password=None):
         self.base_url = base_url
         self.auth_token = None
         self.classes = None

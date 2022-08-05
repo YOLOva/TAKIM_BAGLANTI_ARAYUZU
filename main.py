@@ -51,9 +51,12 @@ def run():
     start_index = 0
     # Run object detection model frame by frame.
     sended_indexes = status_saver.get_sended_indexes()
+    num_error = 0
     for index, frame in enumerate(frames_json[start_index:], start=start_index):
         print(f"current index {index}")
         print(f"complete ratio {len(sended_indexes)}/{len(frames_json)}")
+        if num_error>0:
+            print("Toplamda", num_error, "frame gönderim hatası olmuştur.")
         if(index not in sended_indexes):
             t1_for_one = time.perf_counter()
             # Create a prediction object to store frame info and detections
@@ -82,7 +85,11 @@ def run():
                     time.sleep(waitTime) # 60 saniyeden kalan vakit kadar bekle
                     result = server.send_prediction(predictions) # tekrar gönder
                     t1 = time.perf_counter() # t1 zamanını yenile
+                num_error+=1
             t2_for_one = time.perf_counter()
+            wait_for_one = 0.75-(t2_for_one-t1_for_one)
+            if(wait_for_one)>0:
+                time.sleep(wait_for_one)
             print(f"GEÇEN SÜRE: {t2_for_one - t1_for_one }")
 if __name__ == '__main__':
     run()

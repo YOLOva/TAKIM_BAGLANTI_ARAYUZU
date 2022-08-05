@@ -29,8 +29,8 @@ class ObjectDetectionModel:
         self.evaulation_server = evaluation_server_url
         self.model = Yolov5DetectionModel(
             model_path="./src/yolova/models/best.pt",
-            image_size=640,
-            confidence_threshold=0.5,
+            image_size=1088,
+            confidence_threshold=0.4,
             device="cuda:0" # "cpu",
         )
         # Modelinizi bu kısımda init edebilirsiniz.
@@ -83,7 +83,6 @@ class ObjectDetectionModel:
         detection_diger_group = []
         for coco in cocos:
             bbox=coco["bbox"]
-
             cls = classes[index_to_classes[coco["category_id"]]],  # Tahmin edilen nesnenin sınıfı classes sözlüğü kullanılarak atanmalıdır.
             landing_status = landing_statuses["Inis Alani Degil"]  # Tahmin edilen nesnenin inilebilir durumu landing_statuses sözlüğü kullanılarak atanmalıdır.
             top_left_x = bbox[0]  # Örnek olması için rastgele değer atanmıştır. Modelin sonuçları kullanılmalıdır.
@@ -93,13 +92,13 @@ class ObjectDetectionModel:
 
             # Modelin tespit ettiği herbir nesne için bir DetectedObject sınıfına ait nesne oluşturularak
             # tahmin modelinin sonuçları parametre olarak verilmelidir.
-            d_obj = DetectedObject(cls,
+            d_obj = DetectedObject(cls[0],
                                    landing_status,
                                    top_left_x,
                                    top_left_y,
                                    bottom_right_x,
                                    bottom_right_y)
-            if(cls == 2 or cls == 3):
+            if(cls[0] in [2,3]):
                d_obj.landing_status = landing_statuses["Inilebilir"]
                detection_inis_group.append(d_obj)
             else:
