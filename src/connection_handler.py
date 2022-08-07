@@ -23,7 +23,7 @@ class ConnectionHandler:
         payload = {'username': username,
                    'password': password}
         files = []
-        response = requests.request("POST", self.url_login, data=payload, files=files, timeout=3)
+        response = requests.request("POST", self.url_login, data=payload, files=files, timeout=15)
         response_json = json.loads(response.text)
         if response.status_code == 200:
             self.auth_token = response_json['token']

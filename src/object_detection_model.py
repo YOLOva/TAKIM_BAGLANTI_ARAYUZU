@@ -70,10 +70,10 @@ class ObjectDetectionModel:
             result = get_sliced_prediction(
                 image_path,
                 self.model,
-                slice_height = 1024,
-                slice_width = 1024,
-                overlap_height_ratio = 0.1,
-                overlap_width_ratio = 0.1
+                slice_height = 1600,
+                slice_width = 1600,
+                overlap_height_ratio = 0.9,
+                overlap_width_ratio = 0.9
             )
         else: #1.5 - 1.6 saniye hız
             result = get_prediction(image_path, self.model)
@@ -105,6 +105,7 @@ class ObjectDetectionModel:
                 detection_diger_group.append(d_obj)
             # Modelin tahmin ettiği her nesne prediction nesnesi içerisinde bulunan detected_objects listesine eklenmelidir.
         d_objs = self.inisAlaniKontrolu(detection_inis_group,detection_diger_group)
+        d_objs = self.arac_insan_fix(d_objs)
         for d_obj in d_objs:
             prediction.add_detected_object(d_obj)
         image_name = Path(image_path).stem
@@ -151,3 +152,45 @@ class ObjectDetectionModel:
                     break
             detection_diger_group.append(detection_inis)
         return detection_diger_group
+    def arac_insan_fix(self, detects):
+        araclar = [x for x in detects if x.cls == 0]
+        insanlar = [x for x in detects if x.cls == 1]
+        diger = [x for x in detects if x.cls in [2,3]]
+        insanlar_yeni = []
+        for insan in insanlar:
+            insan_w = abs(insan.top_left_x - insan.bottom_right_x)
+            for arac in araclar:
+                arac_w = abs(arac.top_left_x - arac.bottom_right_x)
+                ratio_w = insan_w/arac_w
+                if (# cisim sol üst köşe koordinatları iniş alanında mı?
+                (
+                    insan.top_left_x <= arac.top_left_x <= insan.bottom_right_x
+                    and
+                    insan.top_left_y <= arac.top_left_y <= insan.bottom_right_y
+                )
+                or
+                # ya da cisim sağ alt köşe koordinatları iniş alanında mı?
+                (
+                    insan.top_left_x <= arac.bottom_right_x <= insan.bottom_right_x
+                    and
+                    insan.top_left_y <= arac.bottom_right_y <= insan.bottom_right_y
+                )
+                or
+                # cisim sağ üst köşe koordinatları iniş alanında mı?
+                (
+                    insan.top_left_x <= arac.bottom_right_x <= insan.bottom_right_x
+                    and
+                    insan.top_left_y <= arac.top_left_y <= insan.bottom_right_y
+                )
+                or
+                # cisim sol alt köşe koordinatları iniş alanında mı?
+                (
+                    insan.top_left_x <= arac.top_left_x <= insan.bottom_right_x
+                    and
+                    insan.top_left_y <= arac.bottom_right_y <= insan.bottom_right_y
+                )):
+                    if (ratio_w>=0.8):
+                        break
+                    else:
+                        insanlar_yeni.append(insan)
+        return araclar + insanlar_yeni + diger

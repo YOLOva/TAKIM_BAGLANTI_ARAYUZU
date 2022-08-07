@@ -65,13 +65,14 @@ def run():
             # Run detection model
             predictions = detection_model.process(index, predictions,evaluation_server_url)
             # Send model predictions of this frame to the evaluation server
-            loop = True
+            """loop = True
             while loop:
                 try:
                     result = server.send_prediction(predictions)
                     loop=False
                 except:
-                    pass
+                    pass"""
+            result = server.send_prediction(predictions)
             response_json = json.loads(result.text)
             if result.status_code == 201:
                 status_saver.addLastFrameIndex(index)
