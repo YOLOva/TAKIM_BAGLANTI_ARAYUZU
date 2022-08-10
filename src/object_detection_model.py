@@ -33,6 +33,7 @@ class ObjectDetectionModel:
             confidence_threshold=0.4,
             device="cuda:0" # "cpu",
         )
+        self.confidences = [0.47, 0.4, 0.4, 0.4]
         # Modelinizi bu kısımda init edebilirsiniz.
         # self.model = get_keras_model() # Örnektir!
 
@@ -82,14 +83,16 @@ class ObjectDetectionModel:
         detection_inis_group = []
         detection_diger_group = []
         for coco in cocos:
+            score = coco["score"]
+            cls = classes[index_to_classes[coco["category_id"]]],
+            if(self.confidences[cls[0]]>score):
+                continue  # Tahmin edilen nesnenin sınıfı classes sözlüğü kullanılarak atanmalıdır.
             bbox=coco["bbox"]
-            cls = classes[index_to_classes[coco["category_id"]]],  # Tahmin edilen nesnenin sınıfı classes sözlüğü kullanılarak atanmalıdır.
             landing_status = landing_statuses["Inis Alani Degil"]  # Tahmin edilen nesnenin inilebilir durumu landing_statuses sözlüğü kullanılarak atanmalıdır.
             top_left_x = bbox[0]  # Örnek olması için rastgele değer atanmıştır. Modelin sonuçları kullanılmalıdır.
             top_left_y = bbox[1]  # Örnek olması için rastgele değer atanmıştır. Modelin sonuçları kullanılmalıdır.
             bottom_right_x = bbox[0]+bbox[2]  # Örnek olması için rastgele değer atanmıştır. Modelin sonuçları kullanılmalıdır.
             bottom_right_y = bbox[1]+bbox[3]  # Örnek olması için rastgele değer atanmıştır. Modelin sonuçları kullanılmalıdır.
-
             # Modelin tespit ettiği herbir nesne için bir DetectedObject sınıfına ait nesne oluşturularak
             # tahmin modelinin sonuçları parametre olarak verilmelidir.
             d_obj = DetectedObject(cls[0],
@@ -156,7 +159,6 @@ class ObjectDetectionModel:
         araclar = [x for x in detects if x.cls == 0]
         insanlar = [x for x in detects if x.cls == 1]
         diger = [x for x in detects if x.cls in [2,3]]
-        insanlar_yeni = []
         for insan in insanlar:
             insan_w = abs(insan.top_left_x - insan.bottom_right_x)
             for arac in araclar:
@@ -190,7 +192,6 @@ class ObjectDetectionModel:
                     insan.top_left_y <= arac.bottom_right_y <= insan.bottom_right_y
                 )):
                     if (ratio_w>=0.8):
-                        break
-                    else:
-                        insanlar_yeni.append(insan)
-        return araclar + insanlar_yeni + diger
+                        insanlar.remove(insan)
+                        
+        return araclar + insanlar + diger
