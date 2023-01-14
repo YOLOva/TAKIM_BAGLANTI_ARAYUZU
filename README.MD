@@ -46,3 +46,7 @@ $ pip install -r requirements.txt
 ````shell
 python main.py
 ````
+Sistem kaldığı yeri kaydediyor, kaldığı yeri temizlemek sıfırdan başlayabilmek için aşağıdaki komutu çalıştırın.
+````shell
+python clean.py
+````
