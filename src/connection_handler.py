@@ -5,7 +5,8 @@ import requests
 
 
 class ConnectionHandler:
-    def __init__(self, base_url="http://10.10.10.10/", username=None, password=None):
+    def __init__(self, base_url="https://teknofest.cezerirobot.com/"
+        ,username=None, password=None):
         self.base_url = base_url
         self.auth_token = None
         self.classes = None
@@ -23,7 +24,8 @@ class ConnectionHandler:
         payload = {'username': username,
                    'password': password}
         files = []
-        response = requests.request("POST", self.url_login, data=payload, files=files, timeout=15)
+        response = requests.request("POST", self.url_login, data=payload, files=files, timeout=3#15
+        )
         response_json = json.loads(response.text)
         if response.status_code == 200:
             self.auth_token = response_json['token']
