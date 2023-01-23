@@ -36,6 +36,10 @@ pythorch linki: https://pytorch.org/get-started/locally/
 ![image](https://user-images.githubusercontent.com/55704722/180611172-315fbd5d-4f2f-4619-9588-cbe82922984a.png)
 
 ## Gerekli paketlerin yüklenmesi
+- takım bağlantı arayüzünü indirdiğiniz klasöre cdleyin
+```
+cd [klasör yolu]
+```
 - Gerekli paketler yüklenir.
 ```shell
 $ pip install -r requirements.txt
