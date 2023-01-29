@@ -1,0 +1,4 @@
+5 taşıt
+0 insan
+3 uap
+1 uai

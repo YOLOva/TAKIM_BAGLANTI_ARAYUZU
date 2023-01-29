@@ -1,0 +1,12 @@
+insan
+uai_positif
+uai_negatif
+uap_positif
+uap_negatif
+otomobil
+motorsiklet
+otobus
+kamyon
+diger_kara_araclari
+rayli_tasit
+deniz_tasiti
