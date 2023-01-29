@@ -59,7 +59,7 @@ class TeamGUI:
         )
         self.canvas.place(x=0, y=0)
         image_image_1 = PhotoImage(
-            file=relative_to_assets("image_1.png"))
+            file=relative_to_assets("background.png"))
         self.current_image = self.canvas.create_image(
             960.0,
             540.0,
@@ -81,7 +81,14 @@ class TeamGUI:
             912.0,
             image=image_image_2
         )
-
+        
+        image_image_3 = PhotoImage(
+            file=relative_to_assets("logo.png"))
+        image_3 = self.canvas.create_image(
+            1812.0,
+            970.0,
+            image=image_image_3
+        )
         self.infolabel = self.canvas.create_text(
             16.0,
             809.0,
@@ -185,19 +192,17 @@ class TeamGUI:
         frames_json = server.get_frames()
         images_folder = "./_images/"
         Path(images_folder).mkdir(parents=True, exist_ok=True)
-
-        sended_predictions = self.status_saver.sended_predictions
         num_error = 0
         num_success = 0
         if len(frames_json) == 0:
             self.update_text2("Frame listesi boş!")
         else:
+            
             for index, frame in enumerate(frames_json):
-                ratio = f"{len(sended_predictions)}/{len(frames_json)}"
                 if (not self.status_saver.isSended(index)):
                     t1_total = time.perf_counter()
                     predictions = FramePredictions(
-                        frame['url'], frame['image_url'], frame['video_name'])
+                        frame['url'], frame['image_url'], frame['video_name'], frame["session"].split("/")[-2])
                     predictions = detection_model.process(
                         index, predictions, evaluation_server_url)
                     self.draw_box(prediction=predictions)
@@ -243,7 +248,7 @@ class TeamGUI:
                 else:
                     num_success += 1
             self.update_text2(
-                "Oturum Tamamlandı!", f"{len(self.status_saver.sended_predictions)}/{len(frames_json)}")
+                "Oturum Tamamlandı!", f"{num_success}/{len(frames_json)}")
         self.startbtn.show(True)
         if len(self.status_saver.sended_predictions) > 0:
             self.clearbtn.show(True)

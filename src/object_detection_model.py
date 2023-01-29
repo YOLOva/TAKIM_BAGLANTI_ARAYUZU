@@ -14,10 +14,9 @@ class ObjectDetectionModel:
         self.evaulation_server = evaluation_server_url
         Path("./_labels/").mkdir(exist_ok=True, parents=False)
         self.confidences = [0.4, 0.4, 0.4, 0.4]
-        self.generate_labeller()
 
-    def generate_labeller(self):
-        self.labeller = AutoLabeller(yolo_weights=r"src\AutoLabeller\YOLOva2022Best.pt", device="cuda:0", labels_output_folder="./_labels/",
+    def generate_labeller(self, output_folder):
+        self.labeller = AutoLabeller(yolo_weights=r"src\AutoLabeller\YOLOva2022Best.pt", device="cuda:0", labels_output_folder=output_folder,
                                 show_vid=False, conf_thres=min(self.confidences), check_inilebilir=True, label_mapper=r"src\AutoLabeller\4class.txt", classes_txt=r"src\AutoLabeller\4classes.txt")  # "cpu", # or 'cuda:0'
     def download_image(self, index, img_url, images_folder):
         t1 = time.perf_counter()
@@ -33,8 +32,12 @@ class ObjectDetectionModel:
         return (image_path, download_time)
 
     def process(self, index, prediction:FramePredictions, evaluation_server_url):
+        output_folder = f"./_output/session_{prediction.session}"
+        if self.current_video_name =="" or self.current_video_name!=prediction.video_name:
+            self.current_video_name=prediction.video_name
+            self.generate_labeller(f"{output_folder}/labels/")
         (image_path, download_time) = self.download_image(
-            index, evaluation_server_url + "media" + prediction.image_url, "./_images/")
+            index, evaluation_server_url + "media" + prediction.image_url, f"{output_folder}/images/")
         prediction.image_path=image_path
         prediction.download_time=download_time
         t1 = time.perf_counter()

@@ -2,10 +2,11 @@ from src.detected_object import DetectedObject
 
 
 class FramePredictions:
-    def __init__(self, frame_url, image_url, video_name):
+    def __init__(self, frame_url, image_url, video_name, session):
         self.frame_url = frame_url
         self.image_url = image_url
         self.video_name = video_name
+        self.session=session
         self.image_path=""
         self.detected_objects:list[DetectedObject] = []
         self.download_time=0
