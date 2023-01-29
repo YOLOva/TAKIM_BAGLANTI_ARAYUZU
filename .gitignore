@@ -1,5 +1,9 @@
 _logs/
 _images/
+_labels/
+.conda/
+.idea/
+test/
 src/__pycache__
 src/yolova/__pycache__
 last_detect
@@ -8,3 +12,5 @@ _labels/
 .conda/
 **/__pycache__/
 test/
+_predict_status/
+src/__pycache__/

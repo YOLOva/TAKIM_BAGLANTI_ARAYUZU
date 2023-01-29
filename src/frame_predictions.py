@@ -1,9 +1,20 @@
+from src.detected_object import DetectedObject
+
+
 class FramePredictions:
     def __init__(self, frame_url, image_url, video_name):
         self.frame_url = frame_url
         self.image_url = image_url
         self.video_name = video_name
-        self.detected_objects = []
+        self.image_path=""
+        self.detected_objects:list[DetectedObject] = []
+        self.download_time=0
+        self.detection_time=0
+        self.total_time=0
+        self.send_time=0
+        self.sleep_time=0
+        self.cocos=[]
+        self.names=[]
 
     def add_detected_object(self, detection):
         self.detected_objects.append(detection)
