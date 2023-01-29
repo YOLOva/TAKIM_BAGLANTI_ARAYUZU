@@ -4,3 +4,7 @@ src/__pycache__
 src/yolova/__pycache__
 last_detect
 myenv
+_labels/
+.conda/
+**/__pycache__/
+test/
