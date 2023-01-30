@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 import time
 
-from tkinter import Tk, Canvas, PhotoImage
+from tkinter import Tk, Canvas, PhotoImage, messagebox
 from src.AutoLabeller.auto_video_labeller import image_resize
 from src.connection_handler import ConnectionHandler
 from src.frame_predictions import FramePredictions
@@ -78,17 +78,11 @@ class TeamGUI:
             file=relative_to_assets("info_back2.png"))
         image_2 = self.canvas.create_image(
             222.0,
-            912.0,
+            908.0,
             image=image_image_2
         )
         
-        image_image_3 = PhotoImage(
-            file=relative_to_assets("logo.png"))
-        image_3 = self.canvas.create_image(
-            1812.0,
-            970.0,
-            image=image_image_3
-        )
+        logobtn=CanvasButton(self.canvas, 1730.0, 860.0, relative_to_assets("logo.png"), self.logoClick)
         self.infolabel = self.canvas.create_text(
             16.0,
             809.0,
@@ -111,7 +105,8 @@ class TeamGUI:
             self.clearbtn.show(False)
         self.window.resizable(False, False)
         self.window.mainloop()
-
+    def logoClick(self):
+        messagebox.showinfo("Bilgi","Emre Aydemir Gururla Sunar.")
     def destroy(self):
         if self.after is not None:
             self.window.after_cancel(self.after)
