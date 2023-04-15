@@ -1,4 +1,5 @@
 _logs/
+_output/
 _images/
 _labels/
 .conda/
