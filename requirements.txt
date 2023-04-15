@@ -13,3 +13,38 @@ opencv-python
 numpy
 matplotlib
 tqdm
+
+# pip install -r requirements.txt
+
+# Base ----------------------------------------
+
+gitpython
+ipython  # interactive notebook
+psutil  # system resources
+PyYAML
+scipy
+thop  # FLOPs computation
+# torch  # see https://pytorch.org/get-started/locally (recommended)
+# torchvision
+# protobuf  # https://github.com/ultralytics/yolov5/issues/8012
+
+# Logging ---------------------------------------------------------------------
+tensorboard
+# clearml
+# comet
+
+# Plotting --------------------------------------------------------------------
+pandas
+seaborn
+
+# StrongSORT ------------------------------------------------------------------
+easydict
+
+# torchreid -------------------------------------------------------------------
+gdown
+
+# ByteTrack -------------------------------------------------------------------
+#lap
+
+# OCSORT ----------------------------------------------------------------------
+filterpy
