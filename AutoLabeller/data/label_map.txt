@@ -1,0 +1,8 @@
+1 insan
+0 otomobil
+0 motorsiklet
+0 otobus
+0 kamyon
+0 diger_kara_araclari
+0 rayli_tasit
+0 deniz_tasiti

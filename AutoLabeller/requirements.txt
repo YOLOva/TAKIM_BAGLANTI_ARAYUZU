@@ -1,0 +1,48 @@
+# pip install -r requirements.txt
+
+# Base ----------------------------------------
+yolov5
+sahi
+gitpython
+ipython  # interactive notebook
+matplotlib
+numpy
+opencv-python
+Pillow
+psutil  # system resources
+PyYAML
+requests
+scipy
+thop  # FLOPs computation
+# torch  # see https://pytorch.org/get-started/locally (recommended)
+# torchvision
+tqdm
+# protobuf  # https://github.com/ultralytics/yolov5/issues/8012
+
+# Logging ---------------------------------------------------------------------
+tensorboard
+# clearml
+# comet
+
+# Plotting --------------------------------------------------------------------
+pandas
+seaborn
+
+# StrongSORT ------------------------------------------------------------------
+easydict
+
+# torchreid -------------------------------------------------------------------
+gdown
+
+# ByteTrack -------------------------------------------------------------------
+#lap
+
+# OCSORT ----------------------------------------------------------------------
+filterpy
+
+# Export ----------------------------------------------------------------------
+# onnx  # ONNX export
+# onnx-simplifier>=0.4.1  # ONNX simplifier
+# nvidia-pyindex  # TensorRT export
+# nvidia-tensorrt  # TensorRT export
+# openvino-dev  # OpenVINO export

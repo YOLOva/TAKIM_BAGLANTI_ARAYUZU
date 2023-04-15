@@ -1,0 +1,82 @@
+weights: /content/drive/MyDrive/Teknofest-YOLOva/Modeller/2023/TransferLearning/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15/weights/last.pt
+cfg: ''
+data: /content/drive/MyDrive/Dataset/Egitim/No_UAIP/Splitted_Train_Val/train_dataset.yaml
+hyp:
+  lr0: 0.01
+  lrf: 0.1
+  momentum: 0.937
+  weight_decay: 0.0003862380981445312
+  warmup_epochs: 3.0
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+  box: 0.015820312500000003
+  cls: 9.492187500000005e-06
+  cls_pw: 1.0
+  obj: 56.699999999999996
+  obj_pw: 1.0
+  iou_t: 0.2
+  anchor_t: 4.0
+  fl_gamma: 0.0
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.9
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.0
+  fliplr: 0.5
+  mosaic: 1.0
+  mixup: 0.1
+  copy_paste: 0.1
+  label_smoothing: 0.0
+epochs: 100
+batch_size: 10
+imgsz: 1280
+rect: false
+resume: true
+nosave: false
+noval: false
+noautoanchor: false
+noplots: false
+evolve: null
+bucket: ''
+cache: null
+image_weights: false
+device: ''
+multi_scale: false
+single_cls: false
+optimizer: SGD
+sync_bn: false
+workers: 8
+project: runs/train
+name: /content/drive/MyDrive/Teknofest-YOLOva/Modeller/2023/TransferLearning/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15
+exist_ok: false
+quad: false
+cos_lr: false
+label_smoothing: 0.0
+patience: 100
+freeze:
+- 0
+save_period: -1
+seed: 0
+local_rank: -1
+mmdet_tags: false
+entity: null
+bbox_interval: -1
+artifact_alias: latest
+neptune_token: null
+neptune_project: null
+s3_upload_dir: null
+upload_dataset: false
+hf_model_id: null
+hf_token: null
+hf_private: false
+hf_dataset_id: null
+roboflow_token: null
+roboflow_upload: false
+img: 1280
+batch: 10
+frezee: 34
+save_dir: /content/drive/MyDrive/Teknofest-YOLOva/Modeller/2023/TransferLearning/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15

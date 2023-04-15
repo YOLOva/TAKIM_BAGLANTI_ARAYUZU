@@ -1,0 +1,4 @@
+10 tren
+0 insan
+3 uap
+1 uai

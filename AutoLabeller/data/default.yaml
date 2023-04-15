@@ -1,0 +1,64 @@
+
+device: "cuda:0"
+enable_save: true
+resize_img: true
+resize_height: 1080
+resize_width: 1920
+use_tracker: true
+classes_txt: "data/classes.txt"
+enable_label_map: true
+label_map_file: "data/label_map_uyz_2023.txt"
+
+
+tracker:
+  min_correlation: 0.59
+  half: false
+  tracking_method: "strongsort"
+  reid_weights: "weights/osnet_x0_25_msmt17.pt"
+  
+  strongsort:
+    ecc: true              # activate camera motion compensation
+    mc_lambda: 0.995       # matching with both appearance (1 - MC_LAMBDA) and motion cost
+    ema_alpha: 0.9         # updates  appearance  state in  an exponential moving average manner
+    max_dist: 0.2          # The matching threshold. Samples with larger distance are considered an invalid match
+    max_iou_distance: 0.7  # Gating threshold. Associations with cost larger than this value are disregarded.
+    max_unmatched_preds: 0 # Maximum number of predictions & updates for unmatched tracks
+    max_age: 30            # Maximum number of missed misses before a track is deleted
+    n_init: 1              # Number of frames that a track remains in initialization phase
+    nn_budget: 100         # Maximum size of the appearance descriptors gallery  
+
+save:
+  decrease_video_frame: true
+  video_fps_to_save: 1
+  pass_detection_not_saved_frames: false
+fixs:
+  negative_bbox_values_fix: true
+  same_size_class_box_in_box_fix: true
+  same_size_class_box_in_box_fix_ratio: 0.67
+  enable_uyz2022_fix: true
+  uyz2022:
+    uaips_state_fix: true
+    person_same_size_in_car_fix: true
+models_params:
+  - name: model1
+    use_sahi: true
+    conf: 0.4
+    imgsz: 1280
+    model: "YOLOva2022Best.pt"
+    postprocess:
+      match_metric: "IOS" # Metric to be used during object prediction matching after sliced prediction.'IOU' for intersection over union, 'IOS' for intersection over smaller area.
+      match_threshold: 0.5 # Sliced predictions having higher iou than postprocess_match_threshold will be postprocessed after sliced prediction.
+      class_agnostic: true #  If true, postprocess will ignore category ids. # Agnostic değeri çakışmalara bakar false iken sınıf içinde çakışmalar, True iken Tüm çakışmalara bakar teke indirir, True yapılması tavsiye edilir.
+      postprocess_type: "NMS" #'NMM', 'GRREDYNMM', LSNMS or 'NMS'. Default is 'GRREDYNMM'.
+      verbose: 1 # 0: no print, 1: print number of slices (default), 2: print number of slices and slice/prediction durations
+    
+    sahi:
+      slice_height: 512 # Height of each slice.
+      slice_width: 512 # Width of each slice.
+      overlap_height_ratio: 0.25 # Fractional overlap in height of each window (e.g. an overlap of 0.2 for a window of size 512 yields an overlap of 102 pixels).
+      overlap_width_ratio: 0.25 # Fractional overlap in width of each window
+      auto_slice_resolution: true # if slice parameters (slice_height, slice_width) are not given, it enables automatically calculate these params from image resolution and orientation.
+
+
+
+
