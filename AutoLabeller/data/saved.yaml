@@ -1,6 +1,6 @@
 classes_txt: data/diger.txt
 device: cuda:0
-enable_label_map: true
+enable_label_map: false
 enable_save: true
 fixs:
   enable_uyz2022_fix: false
@@ -42,8 +42,8 @@ models_params:
     postprocess_type: GREEDYNMM
   sahi:
     auto_slice_resolution: false
-    overlap_height_ratio: 0.05
-    overlap_width_ratio: 0.05
+    overlap_height_ratio: 0.25
+    overlap_width_ratio: 0.25
     perform_standard_pred: true
     slice_height: 1280
     slice_width: 1280
