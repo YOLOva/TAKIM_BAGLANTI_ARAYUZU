@@ -103,8 +103,8 @@ class AutoLabeller:
                 cocos = uAIPFix.fix(cocos)
             if self.params.fixs.uyz2022.person_same_size_in_car_fix.get():
                 cocos = aracInsanFix.fix(cocos)
-        custom_fix=CustomFix()
-        cocos=custom_fix.fix()
+        """ custom_fix=CustomFix()
+        cocos=custom_fix.fix() """
         return cocos
 
 

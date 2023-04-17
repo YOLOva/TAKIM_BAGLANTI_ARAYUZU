@@ -244,18 +244,18 @@ class ParemetersDialog(simpledialog.Dialog):
                  state="readonly").grid(row=row, column=col+1)
 
     def select_file(self, init_file, file_types):
-        ROOT_DIR = str(Path(os.path.dirname(
+        """ ROOT_DIR = str(Path(os.path.dirname(
             os.path.abspath(__file__))).parent).replace("\\", "/")
-        print(ROOT_DIR)
+        print(ROOT_DIR) """
         file_path = askopenfilename(filetypes=file_types, initialdir=Path(
             init_file).parent, initialfile=Path(init_file))
 
-        def try_localize():
+        """ def try_localize():
             if ROOT_DIR in file_path:
                 return file_path.replace(ROOT_DIR+"/", "")
             return file_path
         file_path = try_localize()
-        print(file_path)
+        print(file_path) """
         return file_path
 
     def file_selector_entry(self, master, variable: StringVar, label, file_types, row, col):
