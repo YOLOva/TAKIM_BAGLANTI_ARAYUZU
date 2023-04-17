@@ -53,7 +53,8 @@ class SahiLabeller(BasePredictor):
                         postprocess_match_threshold=modelParams.postprocess.match_threshold.get(),
                         postprocess_class_agnostic=modelParams.postprocess.class_agnostic.get(),
                         verbose=modelParams.verbose.get(),
-                        auto_slice_resolution=modelParams.sahi.auto_slice_resolution.get()
+                        auto_slice_resolution=modelParams.sahi.auto_slice_resolution.get(),
+                        perform_standard_pred=modelParams.sahi.perform_standard_pred.get()
                     )
                 except IndexError as e:
                     print(e)

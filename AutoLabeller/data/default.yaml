@@ -51,8 +51,10 @@ models_params:
       class_agnostic: true #  If true, postprocess will ignore category ids. # Agnostic değeri çakışmalara bakar false iken sınıf içinde çakışmalar, True iken Tüm çakışmalara bakar teke indirir, True yapılması tavsiye edilir.
       postprocess_type: "NMS" #'NMM', 'GRREDYNMM', LSNMS or 'NMS'. Default is 'GRREDYNMM'.
       verbose: 1 # 0: no print, 1: print number of slices (default), 2: print number of slices and slice/prediction durations
+      
     
     sahi:
+      perform_standard_pred: true
       slice_height: 512 # Height of each slice.
       slice_width: 512 # Width of each slice.
       overlap_height_ratio: 0.25 # Fractional overlap in height of each window (e.g. an overlap of 0.2 for a window of size 512 yields an overlap of 102 pixels).

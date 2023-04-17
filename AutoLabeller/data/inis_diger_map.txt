@@ -1,0 +1,12 @@
+-1 uai_positif
+-1 uai_negatif
+-1 uap_positif
+-1 uap_negatif
+0 insan
+1 otomobil
+2 motorsiklet
+3 otobus
+4 kamyon
+5 diger_kara_araclari
+6 rayli_tasit
+7 deniz_tasiti

@@ -65,6 +65,7 @@ class AutoLabeller:
             cls = coco["category_id"]
             name=self.class_map[cls]['name']
             class_id = self.class_map[cls]['id']
+            if(class_id==-1): continue
             if self.params.fixs.uyz2022.uaips_state_fix.get() and cls in [2, 3] and coco["inilebilir"] == 0:
                 class_id = class_id+1
             coco["category_id"]=class_id

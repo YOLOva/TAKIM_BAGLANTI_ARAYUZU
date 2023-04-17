@@ -193,6 +193,8 @@ class ParemetersDialog(simpledialog.Dialog):
         self.entry(master, sahi.overlap_height_ratio,
                    "Overlap Height Ratio:",  self.vcmd, i+3, 0)
         enable_slice_entrys(not sahi.auto_slice_resolution.get())
+        Checkbutton(master, text='perform_standard_pred', variable=sahi.perform_standard_pred,
+                    onvalue=True, offvalue=False, anchor="w").grid(row=i+4, sticky="W")
         # self.enable_slice_entrys(not sahi.auto_slice_resolution.get())
 
     def tracker_group(self, master):
