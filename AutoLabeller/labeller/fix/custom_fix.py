@@ -3,5 +3,6 @@ class CustomFix:
         def get_all_center_objects(cocos):
             return list(filter(lambda x: x["bbox"],cocos))
         return cocos
+    
     def fix(cocos):
         return cocos
