@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 import torch
-from AutoLabeller.labeller.fix.custom_fix import CustomFix
+from ..labeller.fix.custom_fix import CustomFix
 
 from AutoLabeller.root import get_root
 from ..labeller.fix.arac_insan import AracInsanFix
@@ -103,8 +103,8 @@ class AutoLabeller:
                 cocos = uAIPFix.fix(cocos)
             if self.params.fixs.uyz2022.person_same_size_in_car_fix.get():
                 cocos = aracInsanFix.fix(cocos)
-        """ custom_fix=CustomFix()
-        cocos=custom_fix.fix() """
+        custom_fix=CustomFix()
+        cocos=custom_fix.fix(cocos)
         return cocos
 
 

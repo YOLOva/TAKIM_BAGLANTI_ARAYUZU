@@ -23,9 +23,6 @@ class ObjectDetectionModel:
         #self.confidences = [0.4, 0.4, 0.4, 0.4]
 
     def generate_labeller(self, output_folder):
-        label_mapper = r"src\AutoLabeller\4class.txt"
-        classes_txt = r"src\AutoLabeller\4classes.txt"
-        
         self.labeller = AutoLabeller(output_folder)  # "cpu", # or 'cuda:0'
     def download_image(self, index, img_url, images_folder):
         t1 = time.perf_counter()

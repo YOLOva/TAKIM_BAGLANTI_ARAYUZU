@@ -19,8 +19,8 @@ models_params:
   name: inisAlanlari
   postprocess:
     class_agnostic: true
-    match_metric: IOS
-    match_threshold: 0.5
+    match_metric: IOU
+    match_threshold: 0.9
     postprocess_type: GREEDYNMM
   sahi:
     auto_slice_resolution: false
