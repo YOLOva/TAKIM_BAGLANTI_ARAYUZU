@@ -187,7 +187,10 @@ class AutoLabellerUI:
             self.files = os.listdir(self.target_path)
             self.files = [os.path.join(self.target_path, f)
                           for f in self.files]  # add path to each file
-            self.files.sort(key=lambda x: os.path.getmtime(x))
+            paramsaver=ParamsSaver()
+            self.params=paramsaver.getParams()
+            if self.params.sort_files_with_time:
+                self.files.sort(key=lambda x: os.path.getmtime(x) )
             frame = cv2.imread(self.files[0])
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.change_image(frame=frame)

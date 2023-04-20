@@ -1,4 +1,4 @@
-classes_txt: data/diger.txt
+classes_txt: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/inis_diger.txt
 device: cuda:0
 enable_label_map: false
 enable_save: true
@@ -11,9 +11,9 @@ fixs:
     person_same_size_in_car_fix: true
     uaips_state_fix: true
 imgsz: 1280
-label_map_file: data/inis_diger_map.txt
+label_map_file: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/inis_diger_map.txt
 models_params:
-- conf: 0.5
+- conf: 0.6
   id: D:/Teknofest/YOLOVA/AutoLabeller/data/uips/yolov5m6-imgsz1280-batch10-epochs100-hyphigh-time1_4_2023_23_18_56/weights/best.pt
   model: D:/Teknofest/YOLOVA/AutoLabeller/data/uips/yolov5m6-imgsz1280-batch10-epochs100-hyphigh-time1_4_2023_23_18_56/weights/best.pt
   name: inisAlanlari
@@ -31,14 +31,14 @@ models_params:
     slice_width: 1600
   use_sahi: false
   verbose: 0
-- conf: 0.4
-  id: D:/Teknofest/YOLOVA/AutoLabeller/data/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15/weights/best.pt
-  model: D:/Teknofest/YOLOVA/AutoLabeller/data/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15/weights/best.pt
+- conf: 0.5
+  id: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15/weights/best.pt
+  model: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/yolov5m6-frezee34-imgsz1280-batch10-epochs100-hyphigh-time24_3_2023_13_57_15/weights/best.pt
   name: diger
   postprocess:
-    class_agnostic: true
+    class_agnostic: false
     match_metric: IOS
-    match_threshold: 0.9
+    match_threshold: 0.7
     postprocess_type: GREEDYNMM
   sahi:
     auto_slice_resolution: false
@@ -56,6 +56,7 @@ save:
   decrease_video_frame: true
   pass_detection_not_saved_frames: true
   video_fps_to_save: 1
+sort_files_with_time: true
 tracker:
   half: false
   min_correlation: 0.69

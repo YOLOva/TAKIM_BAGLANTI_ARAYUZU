@@ -13,7 +13,8 @@ class AutoLabellerParams:
             self.save = SaveParams(None)
             self.fixs = FixsParams(None)
             return
-
+        
+        self.sort_files_with_time = BooleanVar(value=data["sort_files_with_time"])
         self.imgsz = IntVar(value=data["imgsz"])
         self.device = StringVar(value=data["device"])
         self.use_tracker = BooleanVar(value=data["use_tracker"])
@@ -41,6 +42,7 @@ class AutoLabellerParams:
 
     def toJson(self):
         return {
+            "sort_files_with_time":self.sort_files_with_time.get(),
             "enable_save": self.enable_save.get(),
             "use_tracker": self.use_tracker.get(),
             "imgsz": self.imgsz.get(),

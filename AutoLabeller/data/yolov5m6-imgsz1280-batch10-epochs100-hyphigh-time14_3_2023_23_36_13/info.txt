@@ -1,8 +1,0 @@
-dataset_folder_path = "/content/drive/MyDrive/Dataset/Egitim/No_UAIP/Splitted_Train_Val"
-image_size = 1280
-batch = 10
-epochs = 100
-yoloversion = "yolov5m6"
-hyp = "high"
-cache = "ram"
-cache_enabled=False

@@ -8,7 +8,7 @@ use_tracker: true
 classes_txt: "data/classes.txt"
 enable_label_map: true
 label_map_file: "data/label_map_uyz_2023.txt"
-
+sort_files_with_time: true
 
 tracker:
   min_correlation: 0.59

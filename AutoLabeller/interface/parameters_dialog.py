@@ -171,6 +171,8 @@ class ParemetersDialog(simpledialog.Dialog):
                    "Saniye başına kaydedilecek frame:",  self.vcmd2, 1, 0)
         Checkbutton(master, text='Kaydedilmeyecek Frame\'i atla', variable=self.params.save.pass_detection_not_saved_frames,
                     onvalue=True, offvalue=False, anchor="w").grid(row=2, sticky="W")
+        Checkbutton(master, text='Tespitte tarihe göre sırala', variable=self.params.sort_files_with_time,
+                    onvalue=True, offvalue=False, anchor="w").grid(row=3, sticky="W")
 
     def sahi_group(self, master, modelParams: ModelParams):
         i = 1

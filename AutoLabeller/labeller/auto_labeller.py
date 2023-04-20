@@ -3,12 +3,12 @@
 import cv2
 import numpy as np
 import torch
-from ..labeller.fix.custom_fix import CustomFix
+from .fix.custom.custom_fix import CustomFix
 
 from AutoLabeller.root import get_root
 from ..labeller.fix.arac_insan import AracInsanFix
 from ..labeller.fix.fix import AllClassesFixs
-from ..labeller.fix.uaips import UAIPFix
+from .fix.custom.uaips import UAIPFix
 from ..labeller.sahi_labeller import SahiLabeller
 from ..labeller.tracker_with_sahi_class import Tracker
 import os
@@ -103,7 +103,7 @@ class AutoLabeller:
                 cocos = uAIPFix.fix(cocos)
             if self.params.fixs.uyz2022.person_same_size_in_car_fix.get():
                 cocos = aracInsanFix.fix(cocos)
-        custom_fix=CustomFix()
+        custom_fix=CustomFix(self.predictor.frame)
         cocos=custom_fix.fix(cocos)
         return cocos
 
