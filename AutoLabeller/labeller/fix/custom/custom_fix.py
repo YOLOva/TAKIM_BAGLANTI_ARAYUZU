@@ -75,13 +75,15 @@ def get_cocos_of_id(ids, cocos):
 class CustomFix:
     def __init__(self, frame: Mat) -> None:
         self.frame = frame
-    # UAP UAI çok küçük olmamalı +
-    # UAP UAI Kenarda ise negatif +
-    # UAP UAI Fix With Color +
-
-    # İnsan Boyutu görseldeki kenarda olmayan ve motor dışındakilerden küçük olmalı+
-    # Bir nesnenin boyutları resmin kenarının yarısından fazla olmamalı
-    # Boyut limitleri belirlenmeli, bunları aşanlar elenmeli +
+    
+    # 1) insan denilenlerden %88 yeşil olan yerler çalıdır filtrele
+    # 2) UAP UAI birbiriyle karıştırmayı düzeltmek için mavi kırmızı renklere bak minimum %30u ilgili renkten olmalıdır.
+    # 3) Positif UAP UAI kenarda ise negatif yapılmalıdır.
+    # 4) Sınıflar Farklı confidence değerine sahipler, sınıfların minimum ortada ve kenardaki confidence değerlerini bul eleme yap
+    # 5) Sınıfların Boyut limitleri belirlenmeli, bunları aşanlar elenmeli +
+    # 6) İnsanlar motorsikletler ortadaki otomobillerin max kenarından büyük olmamalıdır(Yanlış bir araç tespitinde hatalı sonuçlar yaratabilir, bu düzeltmenin çok gerektiğide düşünülmüyor)
+    
+    # Düzeltme 4:
     def min_confidence_fix(self, cocos):
         deleteds = []
         for coco in cocos:
@@ -95,7 +97,8 @@ class CustomFix:
 
         return filter_with_id_list(cocos, deleteds)
 
-
+    
+    # Düzeltme 5:
     def size_fix(self, cocos):
         deleteds = []
         for coco in cocos:
@@ -137,21 +140,25 @@ class HumanAndMotoFix:
         mask = cv2.inRange(img_hsv, lower_blue, upper_blue)
         return mask
     
+    # Düzeltme 6:
     def compare_size_fix(self, cocos):
         not_on_edges = list(filter(lambda x: not onEdge(
-            x["bbox"]) and x["category_id"] not in [4, 6], cocos))
+            x["bbox"]) and x["category_id"]  in [5], cocos))
+        if len(not_on_edges)<3:
+            return cocos
+        
         human_and_motors = list(
             filter(lambda x: x["category_id"] in [4, 6], cocos))
-        ws = [x for x in not_on_edges["bbox"][2]]
-        hs = [x for x in not_on_edges["bbox"][3]]
-        min_w, min_h = 1, 1
-        if not_on_edges:
-            min_w = min(ws)
-            min_h = min(hs)
+        ws = [x["bbox"][2] for x in not_on_edges]
+        hs = [x["bbox"][3] for x in not_on_edges]
+        
+        max_w = max(ws)
+        max_h = max(hs)
+        max_l=max(max_w, max_h)
         deleteds = []
         for coco in human_and_motors:
             bbox = coco["bbox"]
-            if len(not_on_edges) > 0 and (bbox[2] > min_w or bbox[3] > min_h or bbox[2] < min_w*0.25 or bbox[3] < min_h*0.25):
+            if min(bbox[2:]) >= max_l:
                 deleteds.append(coco["id"])
                 continue
         return filter_with_id_list(cocos, deleteds)
@@ -167,6 +174,7 @@ class HumanAndMotoFix:
             self.green_mask[y1:y2, x1:x2])/(img.size/3)
         return color_ratio
     
+    # Düzeltme 1:
     def green_area_filter(self, cocos):
         humans=get_cocos_of_id([4], cocos)
         deleteds=[]
@@ -182,7 +190,7 @@ class HumanAndMotoFix:
         return filter_with_id_list(cocos, deleteds)
 
     def fix(self, cocos):
-        # cocos = self.compare_size_fix(cocos)
+        #cocos = self.compare_size_fix(cocos)
         cocos=self.green_area_filter(cocos)
         return cocos
 
@@ -232,7 +240,8 @@ class UAIPFix:
             self.blue_mask[y1:y2, x1:x2])/(img.size/3)
         return red_color_ratio, blue_color_ratio
 
-    # Kenardaki positiflerin kontrol edilip düzeltilmesi işlemi
+    
+    # Düzeltme 3:
     def get_positives(self, cocos):
         return [coco for coco in cocos if coco["category_id"] in [0, 2]]
 
@@ -245,7 +254,8 @@ class UAIPFix:
             if onEdge(positive["bbox"], error_margin=0.001):
                 positive["category_id"] += 1
         return cocos
-
+    
+    # Düzeltme 2:
     def check_color(self, cocos):
         deleteds = []
         for coco in self.get_uaips(cocos):
