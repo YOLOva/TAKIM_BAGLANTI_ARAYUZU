@@ -100,16 +100,18 @@ class ParemetersDialog(simpledialog.Dialog):
                     variable=fixs.uyz2022.person_same_size_in_car_fix, onvalue=True, offvalue=False, anchor="w").grid(row=1, column=0, sticky="W")
 
     def model_general_group(self, master, modelParams: ModelParams,removeModelTab):
-        self.entry(master, modelParams.name, "Ad:",  self.vcmd, 0, 0)
+        
+        self.entry(master, modelParams.imgsz, "imgsz:",  self.vcmd2, 0, 0)
+        self.entry(master, modelParams.name, "Ad:",  self.vcmd, 1, 0)
         Checkbutton(master, text='Sahi', variable=modelParams.use_sahi,
-                    onvalue=True, offvalue=False, anchor="w").grid(row=1, sticky="W")
-        self.entry(master, modelParams.conf, "confidence:",  self.vcmd, 2, 0)
+                    onvalue=True, offvalue=False, anchor="w").grid(row=2, sticky="W")
+        self.entry(master, modelParams.conf, "confidence:",  self.vcmd, 3, 0)
         self.file_selector_entry(
-            master, modelParams.model, "model dizini:", YOLO_Model_Format, 3, 0)
+            master, modelParams.model, "model dizini:", YOLO_Model_Format, 4, 0)
 
         verbose_list = [0, 1, 2]
         self.combobox(master, modelParams.verbose,
-                      verbose_list, "Verbose:", 4, 0)
+                      verbose_list, "Verbose:", 5, 0)
 
         Button(master, text="Modeli Sil",
                command=lambda: removeModelTab()).grid(row=9)
@@ -123,7 +125,6 @@ class ParemetersDialog(simpledialog.Dialog):
     def general_group(self, master):
         Checkbutton(master, text='Veri seti olarak kaydet', variable=self.params.enable_save,
                     onvalue=True, offvalue=False, anchor="w").grid(row=0, column=0, sticky="W")
-        self.entry(master, self.params.imgsz, "imgsz:",  self.vcmd2, 1, 0)
         clist = ["cuda:0", "cpu"]
         self.combobox(master, self.params.device, clist, "device:", 2, 0)
         Checkbutton(master, text='Resmi Boyutlandır', variable=self.params.resize_img,

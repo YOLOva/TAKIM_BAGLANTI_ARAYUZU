@@ -18,7 +18,7 @@ class SahiLabeller(BasePredictor):
                 model_type='yolov5',
                 model_path=modelParams.model.get(),
                 confidence_threshold=modelParams.conf.get(),
-                image_size=params.imgsz.get(),
+                image_size=modelParams.imgsz.get(),
                 device=params.device.get()  # "cpu", # or 'cuda:0'
             )
             model.agnostic=modelParams.postprocess.class_agnostic.get()

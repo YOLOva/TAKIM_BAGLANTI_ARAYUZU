@@ -21,6 +21,7 @@ from ..utils.params_saver import ParamsSaver
 
 from ..utils.yolo_annotation import YoloAnnotation
 
+from numpy.linalg import norm
 
 class AutoLabeller:
     def __init__(self,
@@ -49,10 +50,31 @@ class AutoLabeller:
 
         if len(self.class_map) == 0:
             self.class_map = {i:{"id":i, "name":name} for i, name in enumerate(self.names)}
+    
+    def post_process(self, img:np.ndarray):
 
+        def brightness(img):
+            if len(img.shape) == 3:
+                # Colored RGB or BGR (*Do Not* use HSV images with this function)
+                # create brightness with euclidean norm
+                return np.average(norm(img, axis=2)) / np.sqrt(3)
+            else:
+                # Grayscale
+                return np.average(img)
+        img=cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        br=brightness(img)
+        a=br
+        alpha = 2 # Contrast control (1.0-3.0)
+        beta = 0 # Brightness control (0-100)
+
+        adjusted = cv2.convertScaleAbs(img, alpha=alpha, beta=beta)
+        return img
+    
     def detect(self,source, img:np.ndarray=None, save_txt=True, info=None):
         if type(img) is None:
             img=cv2.imread(source)
+        self.frame=img
+        #img=self.post_process(img)
         cocos = self.predictor.get_prediction(img)
         cocos = self.fix(cocos)
         cocos = self.map_class_ids(cocos)
@@ -91,8 +113,8 @@ class AutoLabeller:
             other["inilebilir"] = -1
         for other in [coco for coco in cocos if coco["category_id"] in [2, 3]]:
             other["inilebilir"] = 1
-        allClassesFixs=AllClassesFixs(self.params, self.predictor.frame)
-        uAIPFix=UAIPFix(self.predictor.frame, allClassesFixs)
+        allClassesFixs=AllClassesFixs(self.params, self.frame)
+        uAIPFix=UAIPFix(self.frame, allClassesFixs)
         aracInsanFix=AracInsanFix()
         if self.params.fixs.negative_bbox_values_fix.get():
             cocos = allClassesFixs.negative_value_fix(cocos)
@@ -103,7 +125,7 @@ class AutoLabeller:
                 cocos = uAIPFix.fix(cocos)
             if self.params.fixs.uyz2022.person_same_size_in_car_fix.get():
                 cocos = aracInsanFix.fix(cocos)
-        custom_fix=CustomFix(self.predictor.frame)
+        custom_fix=CustomFix(self.frame)
         cocos=custom_fix.fix(cocos)
         return cocos
 

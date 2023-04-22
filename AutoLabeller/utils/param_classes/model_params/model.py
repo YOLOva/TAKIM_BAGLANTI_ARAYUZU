@@ -11,6 +11,7 @@ class ModelParams:
             self.tracker = TrackerParams(None)
             self.postprocess = PostProcessParams(None)
             return
+        self.imgsz = IntVar(value=data["imgsz"])
         self.data = data
         self.id=StringVar(value=data["id"])
         self.model = StringVar(value=data["model"])
@@ -24,6 +25,7 @@ class ModelParams:
 
     def toJson(self):
         return {
+            "imgsz": self.imgsz.get(),
             "use_sahi": self.use_sahi.get(),
             "conf": self.conf.get(),
             "model": self.model.get(),

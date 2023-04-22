@@ -189,7 +189,7 @@ class AutoLabellerUI:
                           for f in self.files]  # add path to each file
             paramsaver=ParamsSaver()
             self.params=paramsaver.getParams()
-            if self.params.sort_files_with_time:
+            if self.params.sort_files_with_time.get():
                 self.files.sort(key=lambda x: os.path.getmtime(x) )
             frame = cv2.imread(self.files[0])
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
