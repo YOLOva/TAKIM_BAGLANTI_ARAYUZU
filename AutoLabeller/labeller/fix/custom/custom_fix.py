@@ -76,7 +76,7 @@ class CustomFix:
     def __init__(self, frame: Mat) -> None:
         self.frame = frame
     
-    # 1) insan denilenlerden %88 yeşil olan yerler çalıdır filtrele
+    # 1) insan denilenlerden %88i yeşil olan yerler çalıdır filtrele
     # 2) UAP UAI birbiriyle karıştırmayı düzeltmek için mavi kırmızı renklere bak minimum %30u ilgili renkten olmalıdır.
     # 3) Positif UAP UAI kenarda ise negatif yapılmalıdır.
     # 4) Sınıflar Farklı confidence değerine sahipler, sınıfların minimum ortada ve kenardaki confidence değerlerini bul eleme yap
