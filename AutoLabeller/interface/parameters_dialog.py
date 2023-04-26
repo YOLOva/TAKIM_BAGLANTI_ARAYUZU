@@ -74,8 +74,10 @@ class ParemetersDialog(simpledialog.Dialog):
                       postprocess_match_metric_list, "Post Process Match Metric:", 1, 0)
         self.entry(master, postprocess.match_threshold,
                    "Post Process Match Threshold:",  self.vcmd, 2, 0)
-        Checkbutton(master, text='Post Process Class Agnotstic', variable=postprocess.class_agnostic,
+        Checkbutton(master, text='Post Model Process Class Agnotstic', variable=postprocess.model_class_agnostic,
                     onvalue=True, offvalue=False, anchor="w").grid(row=3, sticky="W")
+        Checkbutton(master, text='Post SAHI Process Class Agnotstic', variable=postprocess.sahi_class_agnostic,
+                    onvalue=True, offvalue=False, anchor="w").grid(row=4, sticky="W")
 
     def fix_groups(self, master):
         fixs = self.params.fixs
@@ -174,6 +176,8 @@ class ParemetersDialog(simpledialog.Dialog):
                     onvalue=True, offvalue=False, anchor="w").grid(row=2, sticky="W")
         Checkbutton(master, text='Tespitte tarihe göre sırala', variable=self.params.sort_files_with_time,
                     onvalue=True, offvalue=False, anchor="w").grid(row=3, sticky="W")
+        Checkbutton(master, text='Doğruluk değeri kaydet', variable=self.params.save.save_conf,
+                    onvalue=True, offvalue=False, anchor="w").grid(row=4, sticky="W")
 
     def sahi_group(self, master, modelParams: ModelParams):
         i = 1

@@ -2,8 +2,13 @@ from cv2 import Mat
 import cv2
 import numpy as np
 
+from AutoLabeller.utils.helper_functions import is_inside
+from AutoLabeller.utils.param_classes.auto_labeller import AutoLabellerParams
+
 from ....utils.image_resize import image_resize
 
+
+custom_agnostic_threshold = 0.75
 
 # frame_devrim max:0.552778, others 0.31247174298321767
 uaip_size_range = [0.025, 0.35]
@@ -26,23 +31,28 @@ size_range_map = {0: uaip_size_range,
                   10: truck_train_ship_range,
                   11: truck_train_ship_range}
 
-others_conf=0.6#0.52
-car_conf=0.6#0.54
-uaips_conf=0.6
-human_conf=0.48
-small_object_conf=0.44
-conf_range_map = {0: {"center":uaips_conf, "edge":uaips_conf},
-                  1: {"center":uaips_conf, "edge":uaips_conf},
-                  2: {"center":uaips_conf, "edge":uaips_conf},
-                  3: {"center":uaips_conf, "edge":uaips_conf},
-                  4: {"center":human_conf, "edge":small_object_conf},
-                  5: {"center":car_conf, "edge":0.55},
-                  6: {"center":small_object_conf, "edge":small_object_conf},
-                  7: {"center":others_conf, "edge":small_object_conf},
-                  8: {"center":others_conf, "edge":small_object_conf},
-                  9: {"center":others_conf, "edge":small_object_conf},
-                  10: {"center":others_conf, "edge":small_object_conf},
-                  11: {"center":others_conf, "edge":small_object_conf}}
+others_conf = 0.65 #0.6  # 0.52
+truck_conf = 0.61  # 0.6145455241203308(22o3)
+car_conf = 0.68 #0.65  #0.6  # 0.6120863556861877(22o3)
+uaips_conf = 0.6
+human_conf = 0.6  # 0.48  # 0.4830521047115326(22o3) # 0.63 min hata
+small_object_conf = 0.44
+edge_conf = 0.5
+rail_conf = 0.8
+rail_edge_conf = 0.7
+conf_range_map = {0: {"center": uaips_conf, "edge": uaips_conf},  # UAI positif
+                  1: {"center": uaips_conf, "edge": uaips_conf},  # UAI negatif
+                  2: {"center": uaips_conf, "edge": uaips_conf},  # UAP positif
+                  3: {"center": uaips_conf, "edge": uaips_conf},  # UAP negatif
+                  4: {"center": human_conf, "edge": edge_conf},  # insan
+                  5: {"center": car_conf, "edge": edge_conf},  # otomobil 0,0.56
+                  # motorsiklet
+                  6: {"center": small_object_conf, "edge": edge_conf},
+                  7: {"center": others_conf, "edge": edge_conf},  # otobüs
+                  8: {"center": others_conf, "edge": edge_conf},  # kamyon
+                  9: {"center": others_conf, "edge": edge_conf},  # diget
+                  10: {"center": rail_conf, "edge": rail_edge_conf},  # rayli
+                  11: {"center": rail_conf, "edge": rail_edge_conf}}  # deniz
 
 
 def average(numbers):
@@ -67,38 +77,41 @@ def onEdge(bbox, error_margin=0.002):
             return True
     return False
 
+
 def filter_with_id_list(cocos, deleteds):
     return list(filter(lambda x: x["id"] not in deleteds, cocos))
 
+
 def get_cocos_of_id(ids, cocos):
     return list(filter(lambda x: x["category_id"] in ids, cocos))
+
+
 class CustomFix:
     def __init__(self, frame: Mat) -> None:
         self.frame = frame
-    
     # 1) insan denilenlerden %88i yeşil olan yerler çalıdır filtrele
     # 2) UAP UAI birbiriyle karıştırmayı düzeltmek için mavi kırmızı renklere bak minimum %30u ilgili renkten olmalıdır.
     # 3) Positif UAP UAI kenarda ise negatif yapılmalıdır.
     # 4) Sınıflar Farklı confidence değerine sahipler, sınıfların minimum ortada ve kenardaki confidence değerlerini bul eleme yap
     # 5) Sınıfların Boyut limitleri belirlenmeli, bunları aşanlar elenmeli +
     # 6) İnsanlar motorsikletler ortadaki otomobillerin max kenarından büyük olmamalıdır(Yanlış bir araç tespitinde hatalı sonuçlar yaratabilir, bu düzeltmenin çok gerektiğide düşünülmüyor)
-    
+
     # Düzeltme 4:
     def min_confidence_fix(self, cocos):
         deleteds = []
         for coco in cocos:
             cls = coco["category_id"]
             conf_range = conf_range_map[cls]
-            if not onEdge(coco["bbox"]) and coco["score"]<=conf_range["center"]:
+            if not onEdge(coco["bbox"]) and coco["score"] <= conf_range["center"]:
                 deleteds.append(coco["id"])
                 continue
-            if coco["score"]<=conf_range["edge"]:
+            if coco["score"] <= conf_range["edge"]:
                 deleteds.append(coco["id"])
 
         return filter_with_id_list(cocos, deleteds)
 
-    
     # Düzeltme 5:
+
     def size_fix(self, cocos):
         deleteds = []
         for coco in cocos:
@@ -113,48 +126,111 @@ class CustomFix:
         return filter_with_id_list(cocos, deleteds)
 
     def fix(self, cocos):
-        cocos=self.min_confidence_fix(cocos)
+        cocos = self.min_confidence_fix(cocos)
         cocos = self.size_fix(cocos)
+        cocos = self.custom_agnostic_filter(cocos)
+        #cocos = self.same_corner_filter(cocos)
         uaip_fixes = UAIPFix(self.frame)
         cocos = uaip_fixes.fix(cocos)
-        human_fixes = HumanAndMotoFix(self.frame)
+        human_fixes = GreenFix(self.frame)
         cocos = human_fixes.fix(cocos)
         return cocos
+
+    def same_corner_filter(self, cocos, ratio=0.99):
+        deleteds = []
+        for coco in cocos:
+            bbox1 = coco["bbox"]
+            if coco["id"] in deleteds:
+                continue
+            for another_coco in cocos:
+                if coco["id"] == another_coco["id"]:
+                    continue
+                bbox2 = another_coco["bbox"]
+                minxr = min(bbox1[0] / bbox2[0], bbox2[0]/bbox1[0]
+                            )if bbox1[0] > 0 and bbox2[0] > 0 else 0
+                minxr2 = min((bbox1[0]+bbox1[2]) / (bbox2[0]+bbox2[2]), (bbox2[0]+bbox2[2])/(
+                    bbox1[0]+bbox1[2]))if bbox1[0] > 0 and bbox2[0] > 0 else 0
+                minyr = min(bbox1[1] / bbox2[1], bbox2[1]/bbox1[1]
+                            ) if bbox1[1] > 0 and bbox2[1] > 0 else 0
+                minyr2 = min((bbox1[1]+bbox1[3]) / (bbox2[1]+bbox2[3]), (bbox2[1]+bbox2[3])/(
+                    bbox1[1]+bbox1[3]))if bbox1[1] > 0 and bbox2[1] > 0 else 0
+                if minxr == 0 or minxr2 == 0 or minyr == 0 or minyr2 == 0:
+                    continue
+                if not (bbox1[0] < bbox2[0]+bbox2[2]/2 < bbox1[0]+bbox1[2] and bbox1[1] < bbox2[1]+bbox2[3]/2 < bbox1[1]+bbox1[3]):
+                    continue
+                if minxr > ratio and minyr > ratio or minxr2 > ratio and minyr2 > ratio:
+                    if bbox1[3]*bbox1[2] > bbox2[3]*bbox2[2]:
+                        deleteds.append(another_coco["id"])
+                    else:
+                        deleteds.append(coco["id"])
+                    continue
+                if minxr > ratio or minyr > ratio or minxr2 > ratio or minyr2 > ratio:
+                    if is_inside(bbox2, bbox1, 0.7) and coco["score"] <= another_coco["score"]:
+                        deleteds.append(coco["id"])
+
+
+        return filter_with_id_list(cocos, deleteds)
+
+    def custom_agnostic_filter(self, cocos):
+        deleteds = []
+        for coco in cocos:
+            if coco["id"] in deleteds:
+                continue
+            for another_coco in cocos:
+                if coco["id"] == another_coco["id"]:
+                    continue
+                inside = is_inside(
+                    another_coco["bbox"], coco["bbox"], custom_agnostic_threshold)
+                if not inside:
+                    continue
+                if coco["category_id"] == 4 and another_coco["category_id"] == 6:
+                    deleteds.append(coco["id"])
+                    continue
+                if coco["category_id"] == 6 and another_coco["category_id"] == 4:
+                    deleteds.append(another_coco["id"])
+                    continue
+                if coco["category_id"] in [4,6] and coco["category_id"] !=  another_coco["category_id"]:
+                    continue
+                if another_coco["score"]<0.9 and coco["score"] >= another_coco["score"] and inside:
+                    deleteds.append(another_coco["id"])
+
+        return filter_with_id_list(cocos, deleteds)
 
     # İnsanların Kutu birleşmesi ya da tek insanın fazladan kutularının olması problemi
     # Deniz taşıtının olacağı yerde mavi alan olması şartı ile yanlış tespit düzeltilebilir.
     # Gölgelerin insana dahil olması
 
 
-class HumanAndMotoFix:
-    def __init__(self, frame:Mat) -> None:
-        self.frame=frame
-        self.green_mask=self.get_green_mask(frame.copy())
+class GreenFix:
+    def __init__(self, frame: Mat) -> None:
+        self.frame = frame
+        self.green_mask = self.get_green_mask(frame.copy())
         """ cv2.imshow("green", self.green_mask)
         cv2.imshow("frame", frame)
         cv2.waitKey(0) """
+
     def get_green_mask(self, frame: Mat) -> Mat:
         img_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        lower_blue = np.array([30, 100, 0])
+        lower_blue = np.array([25, 70, 0])
         upper_blue = np.array([60, 255, 255])
         mask = cv2.inRange(img_hsv, lower_blue, upper_blue)
         return mask
-    
+
     # Düzeltme 6:
     def compare_size_fix(self, cocos):
         not_on_edges = list(filter(lambda x: not onEdge(
-            x["bbox"]) and x["category_id"]  in [5], cocos))
-        if len(not_on_edges)<3:
+            x["bbox"]) and x["category_id"] in [5], cocos))
+        if len(not_on_edges) < 3:
             return cocos
-        
+
         human_and_motors = list(
             filter(lambda x: x["category_id"] in [4, 6], cocos))
         ws = [x["bbox"][2] for x in not_on_edges]
         hs = [x["bbox"][3] for x in not_on_edges]
-        
+
         max_w = max(ws)
         max_h = max(hs)
-        max_l=max(max_w, max_h)
+        max_l = max(max_w, max_h)
         deleteds = []
         for coco in human_and_motors:
             bbox = coco["bbox"]
@@ -162,7 +238,7 @@ class HumanAndMotoFix:
                 deleteds.append(coco["id"])
                 continue
         return filter_with_id_list(cocos, deleteds)
-    
+
     def green_ratio(self, bbox):
         h, w = self.frame.shape[:2]
         y1 = int(bbox[1]*h)
@@ -173,25 +249,40 @@ class HumanAndMotoFix:
         color_ratio = cv2.countNonZero(
             self.green_mask[y1:y2, x1:x2])/(img.size/3)
         return color_ratio
-    
+
     # Düzeltme 1:
-    def green_area_filter(self, cocos):
-        humans=get_cocos_of_id([4], cocos)
-        deleteds=[]
+    def green_area_filter_human(self, cocos):
+        humans = get_cocos_of_id([4, 6], cocos)
+        deleteds = []
         for coco in humans:
-            color_ratio=self.green_ratio(coco["bbox"])
-            #print(color_ratio)
-            if color_ratio>0.88:
+            color_ratio = self.green_ratio(coco["bbox"])
+            # print(color_ratio)
+            if color_ratio > 0.82:
                 deleteds.append(coco["id"])
             else:
-                print(color_ratio)
+                # print(color_ratio)
+                """ cv2.imshow("green", self.green_mask)
+                cv2.waitKey(0) """
+        return filter_with_id_list(cocos, deleteds)
+
+    def green_area_filter_cars(self, cocos):
+        # humans = get_cocos_of_id([5], cocos)
+        deleteds = []
+        for coco in cocos:
+            color_ratio = self.green_ratio(coco["bbox"])
+            # print(color_ratio)
+            if color_ratio > 0.88:
+                deleteds.append(coco["id"])
+            else:
+                # print(color_ratio)
                 """ cv2.imshow("green", self.green_mask)
                 cv2.waitKey(0) """
         return filter_with_id_list(cocos, deleteds)
 
     def fix(self, cocos):
-        #cocos = self.compare_size_fix(cocos)
-        cocos=self.green_area_filter(cocos)
+        # cocos = self.compare_size_fix(cocos)
+        cocos = self.green_area_filter_human(cocos)
+        cocos = self.green_area_filter_cars(cocos)
         return cocos
 
 
@@ -240,8 +331,8 @@ class UAIPFix:
             self.blue_mask[y1:y2, x1:x2])/(img.size/3)
         return red_color_ratio, blue_color_ratio
 
-    
     # Düzeltme 3:
+
     def get_positives(self, cocos):
         return [coco for coco in cocos if coco["category_id"] in [0, 2]]
 
@@ -254,7 +345,7 @@ class UAIPFix:
             if onEdge(positive["bbox"], error_margin=0.001):
                 positive["category_id"] += 1
         return cocos
-    
+
     # Düzeltme 2:
     def check_color(self, cocos):
         deleteds = []

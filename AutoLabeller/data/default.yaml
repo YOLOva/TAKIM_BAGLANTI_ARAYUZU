@@ -31,6 +31,7 @@ save:
   decrease_video_frame: true
   video_fps_to_save: 1
   pass_detection_not_saved_frames: false
+  save_conf: true
 fixs:
   negative_bbox_values_fix: true
   same_size_class_box_in_box_fix: true
@@ -44,11 +45,13 @@ models_params:
     use_sahi: true
     conf: 0.4
     imgsz: 1280
+    
     model: "YOLOva2022Best.pt"
     postprocess:
       match_metric: "IOS" # Metric to be used during object prediction matching after sliced prediction.'IOU' for intersection over union, 'IOS' for intersection over smaller area.
       match_threshold: 0.5 # Sliced predictions having higher iou than postprocess_match_threshold will be postprocessed after sliced prediction.
-      class_agnostic: true #  If true, postprocess will ignore category ids. # Agnostic değeri çakışmalara bakar false iken sınıf içinde çakışmalar, True iken Tüm çakışmalara bakar teke indirir, True yapılması tavsiye edilir.
+      sahi_class_agnostic: true #  If true, postprocess will ignore category ids. # Agnostic değeri çakışmalara bakar false iken sınıf içinde çakışmalar, True iken Tüm çakışmalara bakar teke indirir, True yapılması tavsiye edilir.
+      model_class_agnostic: true
       postprocess_type: "NMS" #'NMM', 'GRREDYNMM', LSNMS or 'NMS'. Default is 'GRREDYNMM'.
       verbose: 1 # 0: no print, 1: print number of slices (default), 2: print number of slices and slice/prediction durations
       

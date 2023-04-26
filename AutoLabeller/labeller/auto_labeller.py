@@ -34,6 +34,7 @@ class AutoLabeller:
         else:
             self.predictor = SahiLabeller(self.params)
         self.names = self.predictor.names
+        
         self.labels_output_folder = labels_output_folder
         self.detect_index = 0
 
@@ -81,6 +82,7 @@ class AutoLabeller:
         if save_txt:
             self.write_labels(cocos, source)
         self.detect_index += 1
+
         return cocos
     
     def map_class_ids(self, cocos):
@@ -105,7 +107,7 @@ class AutoLabeller:
 
         yolo_annotation = YoloAnnotation(
             f"{txt_path}\\{Path(source).stem}.txt")   
-        yolo_annotation.write_cocos(cocos)
+        yolo_annotation.write_cocos(cocos, self.params.save.save_conf)
 
     def fix(self, cocos):
         # TODO: İnsanların belli bir boyuttan büyük olması temizlenme aşamasına girmeli

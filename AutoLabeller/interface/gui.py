@@ -265,7 +265,7 @@ class AutoLabellerUI:
         self.params=paramsaver.getParams()
         if type(img) is not np.ndarray:
             img=cv2.imread(img)
-        self.labeller.detect(dest, img, save_txt)
+        #   self.labeller.detect(dest, img, save_txt)
         if self.params.resize_img.get() and img.shape[0] > self.params.resize_height.get():
             img = image_resize(img, height=self.params.resize_height.get(), width=self.params.resize_width.get())
         cocos = self.labeller.detect(

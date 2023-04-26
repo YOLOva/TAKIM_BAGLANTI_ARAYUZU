@@ -13,10 +13,15 @@ class SaveParams:
             value=data["decrease_video_frame"])
         self.pass_detection_not_saved_frames = BooleanVar(
             value=data["pass_detection_not_saved_frames"])
+        
+        self.save_conf = BooleanVar(
+            value=data["save_conf"])
+
 
     def toJson(self):
         return {
             "decrease_video_frame": self.decrease_video_frame.get(),
             "video_fps_to_save": self.video_fps_to_save.get(),
-            "pass_detection_not_saved_frames": self.pass_detection_not_saved_frames.get()
+            "pass_detection_not_saved_frames": self.pass_detection_not_saved_frames.get(),
+            "save_conf": self.save_conf.get()
         }

@@ -12,50 +12,53 @@ fixs:
     uaips_state_fix: true
 label_map_file: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/inis_diger_map.txt
 models_params:
-- conf: 0.6
+- conf: 0.1
   id: D:/Teknofest/YOLOVA/AutoLabeller/data/uips/yolov5m6-imgsz1280-batch10-epochs100-hyphigh-time1_4_2023_23_18_56/weights/best.pt
   imgsz: 1280
   model: D:/Teknofest/YOLOVA/AutoLabeller/data/uips/yolov5m6-imgsz1280-batch10-epochs100-hyphigh-time1_4_2023_23_18_56/weights/best.pt
   name: inisAlanlari
   postprocess:
-    class_agnostic: true
-    match_metric: IOU
+    match_metric: IOS
     match_threshold: 0.9
-    postprocess_type: GREEDYNMM
+    model_class_agnostic: true
+    postprocess_type: NMS
+    sahi_class_agnostic: true
   sahi:
     auto_slice_resolution: false
-    overlap_height_ratio: 0.25
-    overlap_width_ratio: 0.25
+    overlap_height_ratio: 0.9
+    overlap_width_ratio: 0.9
     perform_standard_pred: true
     slice_height: 1600
     slice_width: 1600
   use_sahi: false
-  verbose: 0
-- conf: 0.4
+  verbose: 2
+- conf: 0.48
   id: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/yolov5l6-imgsz1536-batch12-epochs300-hypvisdrone-time20_4_2023_12_22_54/weights/best.pt
   imgsz: 1536
   model: D:/Teknofest/YOLOVA/ConnectionInterface/TAKIM_BAGLANTI_ARAYUZU/AutoLabeller/data/yolov5l6-imgsz1536-batch12-epochs300-hypvisdrone-time20_4_2023_12_22_54/weights/best.pt
   name: diger
   postprocess:
-    class_agnostic: true
-    match_metric: IOU
+    match_metric: IOS
     match_threshold: 0.75
+    model_class_agnostic: true
     postprocess_type: GREEDYNMM
+    sahi_class_agnostic: false
   sahi:
     auto_slice_resolution: false
     overlap_height_ratio: 0.25
     overlap_width_ratio: 0.25
     perform_standard_pred: true
-    slice_height: 1600
-    slice_width: 1600
-  use_sahi: false
+    slice_height: 1700
+    slice_width: 1700
+  use_sahi: true
   verbose: 0
 resize_height: 1080
 resize_img: true
 resize_width: 1920
 save:
   decrease_video_frame: true
-  pass_detection_not_saved_frames: true
+  pass_detection_not_saved_frames: false
+  save_conf: true
   video_fps_to_save: 1
 sort_files_with_time: false
 tracker:

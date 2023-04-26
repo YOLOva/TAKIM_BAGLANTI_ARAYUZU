@@ -21,7 +21,7 @@ class SahiLabeller(BasePredictor):
                 image_size=modelParams.imgsz.get(),
                 device=params.device.get()  # "cpu", # or 'cuda:0'
             )
-            model.agnostic=modelParams.postprocess.class_agnostic.get()
+            model.agnostic=modelParams.postprocess.model_class_agnostic.get()
             self.names+=model.category_names
             self.models.append(model)
         self.params=params
@@ -37,8 +37,9 @@ class SahiLabeller(BasePredictor):
         curr_length=0
         for i, model in enumerate(self. models):
             modelParams=self.params.modelsParams[i]
-            model.agnostic=modelParams.postprocess.class_agnostic.get()
+            model.agnostic=modelParams.postprocess.model_class_agnostic.get()
             model.confidence_threshold=modelParams.conf.get()
+            model.mask_threshold=modelParams.postprocess.match_threshold.get()
             if modelParams.use_sahi.get():
                 try:
                     new_result = get_sliced_prediction(
@@ -51,7 +52,7 @@ class SahiLabeller(BasePredictor):
                         postprocess_type=modelParams.postprocess.postprocess_type.get(),
                         postprocess_match_metric=modelParams.postprocess.match_metric.get(),
                         postprocess_match_threshold=modelParams.postprocess.match_threshold.get(),
-                        postprocess_class_agnostic=modelParams.postprocess.class_agnostic.get(),
+                        postprocess_class_agnostic=modelParams.postprocess.sahi_class_agnostic.get(),
                         verbose=modelParams.verbose.get(),
                         auto_slice_resolution=modelParams.sahi.auto_slice_resolution.get(),
                         perform_standard_pred=modelParams.sahi.perform_standard_pred.get()
@@ -62,7 +63,7 @@ class SahiLabeller(BasePredictor):
                 postprocess_constructor = POSTPROCESS_NAME_TO_CLASS[modelParams.postprocess.postprocess_type.get()]
                 try:
                     new_result = get_prediction(self.frame, model, postprocess= postprocess_constructor(
-                        match_threshold=modelParams.postprocess.match_threshold.get(), match_metric=modelParams.postprocess.match_metric.get(), class_agnostic=modelParams.postprocess.class_agnostic.get()), verbose=modelParams.verbose.get())
+                        match_threshold=modelParams.postprocess.match_threshold.get(), match_metric=modelParams.postprocess.match_metric.get(), class_agnostic=modelParams.postprocess.sahi_class_agnostic.get()), verbose=modelParams.verbose.get())
                 except IndexError as e:
                     print(e)
             if new_result is not None:
